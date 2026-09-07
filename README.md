@@ -46,7 +46,7 @@ Desde el panel se puede:
 |---|---|
 | **Añadir y quitar modelos** | Crear, editar, duplicar y borrar (con confirmación). |
 | **Aviso de tallaje** | Un texto corto por modelo («Pide media talla más») que sale junto al selector de números. |
-| **Varias fotos** | Arrastrar o buscar en el ordenador. Se reordenan y se les pone texto alternativo. La primera manda en la parrilla. |
+| **Varias fotos** | Arrastrar o buscar en el ordenador. Se reordenan y se les pone texto alternativo. La primera manda en la parrilla. Hasta 12 por producto. |
 | **Descripción con IA** | Un botón redacta el texto a partir del nombre, la horma, el color y los materiales. |
 | **Tallaje propio** | Cada modelo define sus columnas (US, UK, centímetros de pie…) y sus números, con stock por talla. Hay plantillas de tallas EU y de S/M/L. |
 | **Modelo 3D** | Grosor y recorte del fondo se ajustan con vista previa en directo. |
@@ -54,6 +54,27 @@ Desde el panel se puede:
 | **Diagnóstico** | Botón «Comprobar»: escribe y relee de verdad en el almacén y dice si los cambios se están guardando. |
 
 ---
+
+## Las fotos
+
+Se pueden subir tal cual salen del móvil: **antes de enviarlas, el navegador las
+reduce a 2000 px de lado y las recomprime a JPG**. Una foto de iPhone de 4,6 MB
+acaba pesando unos 370 KB, con lo que la subida es casi instantánea, la tienda
+carga rápido y el envío entra de sobra en el límite de 4,5 MB por petición que
+tienen las funciones de Vercel.
+
+Se sube **una foto por petición**, no todas juntas: si una falla, las demás
+entran igual y el error dice cuál ha sido y por qué.
+
+- **Formatos**: JPG, PNG, WebP y AVIF. Los SVG se admiten y se suben sin tocar.
+- **HEIC de iPhone**: no vale, porque ningún navegador sabe convertirlo. El panel
+  lo detecta (aunque el fichero venga renombrado a `.jpg`) y te dice cómo
+  arreglarlo: en el iPhone, Ajustes → Cámara → Formatos → **Más compatible**.
+- Se comprueban los primeros bytes de cada fichero, así que algo renombrado a
+  `.jpg` que no sea una imagen se rechaza en vez de guardarse roto.
+
+Al **duplicar** un producto, la copia reutiliza las mismas fotos. Por eso borrar
+un producto no borra sus ficheros: se llevaría por delante los de la copia.
 
 ## Configuración
 

@@ -4,6 +4,57 @@ import { useId, useRef, useState } from "react";
 
 import type { ProductImage } from "@/lib/types";
 
+/**
+ * Lado máximo al que se reduce una foto antes de subirla.
+ *
+ * Una foto de móvil son 3000 x 4000 px y 5 MB. Sin reducirla: la subida tarda,
+ * el navegador de quien visita la tienda se traga megas de más, y en Vercel ni
+ * siquiera llega (las funciones rechazan cuerpos de más de 4,5 MB). A 2000 px
+ * se sigue viendo perfecta a pantalla completa.
+ */
+const MAX_SIDE = 2000;
+const KEEP_AS_IS_BYTES = 900 * 1024;
+const MAX_FOTOS = 12;
+
+/** Reduce y recomprime en el navegador. Si no se puede, devuelve el original. */
+async function prepare(file: File): Promise<File> {
+  // Los SVG no se rasterizan: son vectoriales y ya pesan poco.
+  if (file.type === "image/svg+xml") return file;
+
+  // Si el navegador no sabe decodificarlo (HEIC de iPhone, por ejemplo) se
+  // manda tal cual y que el servidor conteste con un motivo claro.
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" }).catch(
+    () => null,
+  );
+  if (!bitmap) return file;
+
+  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  if (scale === 1 && file.size <= KEEP_AS_IS_BYTES) {
+    bitmap.close();
+    return file;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    bitmap.close();
+    return file;
+  }
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", 0.86),
+  );
+  if (!blob || blob.size >= file.size) return file;
+
+  return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.jpg`, {
+    type: "image/jpeg",
+  });
+}
+
 type Props = {
   images: ProductImage[];
   onChange: (images: ProductImage[]) => void;
@@ -14,31 +65,65 @@ export default function ImageUploader({ images, onChange }: Props) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Se sube foto a foto, no todas en una petición: así una que falle no tira
+   * abajo las demás, y el cuerpo de cada petición se mantiene pequeño.
+   */
   const upload = async (fileList: FileList | File[]) => {
     const files = Array.from(fileList);
     if (files.length === 0) return;
 
-    setBusy(true);
     setError(null);
-    try {
-      const body = new FormData();
-      files.forEach((file) => body.append("files", file));
-      const response = await fetch("/api/upload", { method: "POST", body });
-      const payload = (await response.json()) as {
-        images?: ProductImage[];
-        error?: string;
-      };
-      if (!response.ok) throw new Error(payload.error ?? "No se han podido subir las fotos.");
-      onChange([...images, ...(payload.images ?? [])]);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "No se han podido subir las fotos.");
-    } finally {
-      setBusy(false);
+    const hueco = MAX_FOTOS - images.length;
+    if (hueco <= 0) {
+      setError(`Máximo ${MAX_FOTOS} fotos por producto.`);
       if (inputRef.current) inputRef.current.value = "";
+      return;
     }
+
+    const added: ProductImage[] = [];
+    const fallos: string[] = files.length > hueco
+      ? [`sólo caben ${hueco} foto(s) más: el resto se ha descartado`]
+      : [];
+    files.length = Math.min(files.length, hueco);
+
+    for (const [index, original] of files.entries()) {
+      setBusy(`Subiendo ${index + 1} de ${files.length}…`);
+      try {
+        const file = await prepare(original);
+        const body = new FormData();
+        body.append("files", file);
+
+        const response = await fetch("/api/upload", { method: "POST", body });
+
+        // Un 413 del alojamiento no llega como JSON: hay que contemplarlo.
+        const payload = await response
+          .json()
+          .catch(() => ({}) as { images?: ProductImage[]; error?: string });
+
+        if (!response.ok) {
+          throw new Error(
+            payload.error ??
+              (response.status === 413
+                ? "el alojamiento ha rechazado el envío por tamaño"
+                : `el servidor ha respondido ${response.status}`),
+          );
+        }
+        added.push(...(payload.images ?? []));
+      } catch (cause) {
+        fallos.push(
+          `«${original.name}»: ${cause instanceof Error ? cause.message : "fallo al subir"}`,
+        );
+      }
+    }
+
+    if (added.length > 0) onChange([...images, ...added]);
+    if (fallos.length > 0) setError(fallos.join(" · "));
+    setBusy(null);
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const move = (from: number, to: number) => {
@@ -75,7 +160,7 @@ export default function ImageUploader({ images, onChange }: Props) {
         }`}
       >
         <p className="text-sm">
-          {busy ? "Subiendo…" : "Arrastra aquí las fotos o"}{" "}
+          {busy ?? "Arrastra aquí las fotos o"}{" "}
           {!busy && (
             <label
               htmlFor={inputId}
@@ -86,8 +171,9 @@ export default function ImageUploader({ images, onChange }: Props) {
           )}
         </p>
         <p className="mt-2 text-xs text-stone">
-          JPG, PNG, WebP, AVIF o SVG. Hasta 12 MB por foto. La primera es la que se
-          ve en la parrilla y la que usa el 3D.
+          JPG, PNG, WebP o AVIF. Se reducen solas a 2000 px antes de subirse, así
+          que da igual que vengan del móvil. La primera es la que se ve en la
+          parrilla y la que usa el 3D.
         </p>
         <input
           id={inputId}

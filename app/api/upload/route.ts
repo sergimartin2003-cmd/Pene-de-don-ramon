@@ -31,6 +31,43 @@ const EXTENSIONS: Record<string, string> = {
   "image/svg+xml": ".svg",
 };
 
+/**
+ * El tipo que declara el navegador se deduce muchas veces de la extensión, así
+ * que un fichero renombrado cuela. Se comprueban los primeros bytes para no
+ * guardar algo que luego no se pueda mostrar.
+ */
+function looksLikeImage(buffer: Buffer, mime: string): boolean {
+  const starts = (...bytes: number[]) => bytes.every((b, i) => buffer[i] === b);
+
+  switch (mime) {
+    case "image/jpeg":
+      return starts(0xff, 0xd8, 0xff);
+    case "image/png":
+      return starts(0x89, 0x50, 0x4e, 0x47);
+    case "image/gif":
+      return starts(0x47, 0x49, 0x46);
+    case "image/webp":
+      return starts(0x52, 0x49, 0x46, 0x46) && buffer.subarray(8, 12).toString() === "WEBP";
+    case "image/avif":
+      return buffer.subarray(4, 8).toString() === "ftyp";
+    case "image/svg+xml": {
+      const head = buffer.subarray(0, 1024).toString("utf8").trimStart();
+      return head.startsWith("<?xml") || head.startsWith("<svg");
+    }
+    default:
+      return false;
+  }
+}
+
+/** Detecta el caso más común de foto que el navegador no sabe convertir. */
+function isHeic(buffer: Buffer): boolean {
+  const brand = buffer.subarray(8, 12).toString();
+  return (
+    buffer.subarray(4, 8).toString() === "ftyp" &&
+    ["heic", "heix", "hevc", "mif1", "heim"].includes(brand)
+  );
+}
+
 export async function POST(request: Request) {
   if (!(await isAdmin())) return unauthorized();
 
@@ -67,22 +104,43 @@ export async function POST(request: Request) {
   const uploaded: { id: string; url: string; alt: string }[] = [];
 
   for (const file of files) {
-    const extension = EXTENSIONS[file.type];
-    if (!extension) {
-      return Response.json(
-        { error: `"${file.name}" no es una imagen admitida (JPG, PNG, WebP, AVIF o SVG).` },
-        { status: 415 },
-      );
-    }
     if (file.size > MAX_BYTES) {
       return Response.json(
-        { error: `"${file.name}" pesa más de 12 MB. Comprímela antes de subirla.` },
+        { error: `pesa más de 12 MB` },
         { status: 413 },
       );
     }
 
-    const id = randomUUID();
     const buffer = Buffer.from(await file.arrayBuffer());
+    const extension = EXTENSIONS[file.type];
+
+    if (isHeic(buffer)) {
+      return Response.json(
+        {
+          error:
+            "es una foto HEIC de iPhone y el navegador no sabe convertirla. " +
+            "En el iPhone: Ajustes → Cámara → Formatos → Más compatible, o " +
+            "compártela por correo, que la convierte a JPG.",
+        },
+        { status: 415 },
+      );
+    }
+
+    if (!extension) {
+      return Response.json(
+        { error: "no es una imagen admitida (JPG, PNG, WebP o AVIF)" },
+        { status: 415 },
+      );
+    }
+
+    if (!looksLikeImage(buffer, file.type)) {
+      return Response.json(
+        { error: "no parece una imagen de verdad, aunque tenga esa extensión" },
+        { status: 415 },
+      );
+    }
+
+    const id = randomUUID();
 
     if (useBlob) {
       try {
@@ -94,8 +152,8 @@ export async function POST(request: Request) {
         return Response.json(
           {
             error:
-              "No se ha podido guardar la foto en Vercel Blob. Comprueba que el " +
-              "Blob Store sigue conectado al proyecto.",
+              "no se ha podido guardar en Vercel Blob. Comprueba que el Blob " +
+              "Store sigue conectado al proyecto.",
           },
           { status: 502 },
         );
@@ -117,10 +175,9 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            `Aquí no hay dónde guardar las fotos, así que se incrustan en el ` +
-            `producto y "${file.name}" es demasiado grande (máximo 1,5 MB). ` +
-            `Conecta un Blob Store al proyecto en Vercel (Storage → Blob) y ` +
-            `podrás subir fotos de hasta 12 MB que además no se perderán.`,
+            "aquí no hay dónde guardar las fotos, así que se incrustan en el " +
+            "producto y esta pasa de 1,5 MB. Conecta un Blob Store al proyecto " +
+            "en Vercel (Storage → Blob) y dejará de pasar.",
         },
         { status: 413 },
       );
