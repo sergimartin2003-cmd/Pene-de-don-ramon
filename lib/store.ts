@@ -11,8 +11,10 @@ import {
 import { uniqueSlug } from "./slug";
 import { seedProducts } from "./seed";
 import {
+  BlobTimeoutError,
   blobIsConfigured,
   isConflict,
+  probeBlob,
   readCatalog,
   writeCatalog,
 } from "./blob-store";
@@ -126,6 +128,55 @@ export function storageLabel(): string {
 /** true si los cambios del panel se guardan de verdad. */
 export function storageIsPersistent(): boolean {
   return !state.degraded;
+}
+
+export type StorageCheck = { ok: boolean; driver: string; detail: string };
+
+/**
+ * Comprueba el almacenamiento de verdad: escribe algo, lo vuelve a leer y lo
+ * borra. Es lo que permite confirmar de un vistazo que el Blob Store quedó bien
+ * conectado, sin esperar a que falle el primer producto.
+ */
+export async function checkStorage(): Promise<StorageCheck> {
+  const usingBlob = blobIsConfigured();
+  const label = usingBlob ? blobDriver.label : fileDriver.label;
+
+  try {
+    if (usingBlob) {
+      await probeBlob();
+    } else {
+      const probe = path.join(DATA_DIR, `.prueba-${randomUUID()}`);
+      await fs.mkdir(DATA_DIR, { recursive: true });
+      await fs.writeFile(probe, "ok", "utf8");
+      const read = await fs.readFile(probe, "utf8");
+      await fs.rm(probe, { force: true });
+      if (read !== "ok") throw new Error("lo leído no coincide con lo escrito");
+    }
+
+    // Si antes había fallado y ahora funciona, se sale del modo degradado sin
+    // tener que volver a desplegar.
+    state.degraded = false;
+    return {
+      ok: true,
+      driver: label,
+      detail: usingBlob
+        ? "Escrito y vuelto a leer en Vercel Blob. Lo que crees se guardará."
+        : "Escrito y vuelto a leer en disco. Lo que crees se guardará.",
+    };
+  } catch (cause) {
+    const message = cause instanceof Error ? cause.message : "fallo desconocido";
+    const timedOut =
+      cause instanceof BlobTimeoutError || /abort|timeout|timed out/i.test(message);
+    return {
+      ok: false,
+      driver: label,
+      detail: usingBlob
+        ? timedOut
+          ? "No hay respuesta de Vercel Blob. Comprueba que el Blob Store sigue conectado al proyecto."
+          : `Vercel Blob ha rechazado la escritura: ${message}`
+        : `No se ha podido escribir en disco: ${message}`,
+    };
+  }
 }
 
 function degrade(cause: unknown): void {

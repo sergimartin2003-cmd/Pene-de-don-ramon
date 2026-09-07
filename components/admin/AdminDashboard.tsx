@@ -32,6 +32,8 @@ export default function AdminDashboard({
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
+  const [check, setCheck] = useState<{ ok: boolean; detail: string } | null>(null);
+  const [checking, setChecking] = useState(false);
 
   const sortNewestFirst = (list: Product[]) =>
     [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -96,6 +98,22 @@ export default function AdminDashboard({
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.refresh();
+  };
+
+  const runCheck = async () => {
+    setChecking(true);
+    setCheck(null);
+    try {
+      const response = await fetch("/api/admin/almacenamiento", { method: "POST" });
+      const payload = (await response.json()) as { ok: boolean; detail: string };
+      setCheck(payload);
+      // Si la prueba pasa, el aviso de "modo demostración" ya no aplica.
+      if (payload.ok && !persistent) router.refresh();
+    } catch {
+      setCheck({ ok: false, detail: "No se ha podido hacer la comprobación." });
+    } finally {
+      setChecking(false);
+    }
   };
 
   const published = products.filter((product) => product.published).length;
@@ -174,7 +192,27 @@ export default function AdminDashboard({
                   {products.length} en total · {published} visibles ·{" "}
                   {products.length - published} en borrador
                 </p>
-                <p className="label mt-2 text-stone">Guardando en {storage}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <p className="label text-stone">Guardando en {storage}</p>
+                  <button
+                    type="button"
+                    onClick={() => void runCheck()}
+                    disabled={checking}
+                    className="label border border-ink/20 px-3 py-2 transition-colors hover:border-ink disabled:opacity-40"
+                  >
+                    {checking ? "Comprobando…" : "Comprobar"}
+                  </button>
+                </div>
+                {check && (
+                  <p
+                    className={`mt-2.5 max-w-md text-sm ${
+                      check.ok ? "text-olive" : "text-ember-dark"
+                    }`}
+                  >
+                    {check.ok ? "✓ " : "✕ "}
+                    {check.detail}
+                  </p>
+                )}
               </div>
               <button
                 type="button"

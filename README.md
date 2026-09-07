@@ -51,6 +51,7 @@ Desde el panel se puede:
 | **Tallaje propio** | Cada modelo define sus columnas (US, UK, centímetros de pie…) y sus números, con stock por talla. Hay plantillas de tallas EU y de S/M/L. |
 | **Modelo 3D** | Grosor y recorte del fondo se ajustan con vista previa en directo. |
 | **Borradores** | Un modelo sin publicar sólo lo ve quien tiene la sesión abierta. |
+| **Diagnóstico** | Botón «Comprobar»: escribe y relee de verdad en el almacén y dice si los cambios se están guardando. |
 
 ---
 
@@ -167,8 +168,13 @@ Al arrancar, la tienda detecta la variable y pasa a guardar ahí:
   navegador de quien visita la tienda.
 
 Para comprobar que ha funcionado, entra en `/admin`: bajo el título «Productos»
-pone en qué almacén está guardando. Si dice «sólo memoria», el Blob Store no está
-conectado.
+pone en qué almacén está guardando, y el botón **Comprobar** hace una prueba real
+(escribe un fichero, lo vuelve a leer y lo borra) y te dice si ha ido bien. Si dice
+«sólo memoria», el Blob Store no está conectado.
+
+Todas las llamadas a Blob llevan tiempo límite propio, porque los reintentos del
+SDK no atienden a la señal de cancelación: un Blob Store caído hace que la tienda
+pase a memoria en segundos en vez de dejar las páginas colgadas.
 
 Dos escrituras a la vez desde instancias distintas no se pisan: cada guardado
 lleva el ETag del catálogo que leyó, y si otro escribió mientras tanto se recarga
