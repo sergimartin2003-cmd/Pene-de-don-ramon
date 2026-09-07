@@ -13,7 +13,8 @@ next-env.d.ts
 /data/*
 !/data/.gitkeep
 
-# Fotos subidas desde el panel de admin (contenido, no código)
+# Fotos subidas desde el panel de admin: van a data/uploads/, ya ignorado
+# arriba. En /public sólo quedan las imágenes de ejemplo, que sí se versionan.
 /public/uploads/*
 !/public/uploads/.gitkeep
 !/public/uploads/seed/

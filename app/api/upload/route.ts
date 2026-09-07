@@ -4,11 +4,11 @@ import { randomUUID } from "node:crypto";
 
 import { isAdmin, unauthorized } from "@/lib/auth";
 import { blobIsConfigured, uploadPhoto } from "@/lib/blob-store";
+import { UPLOAD_DIR, photoUrl } from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const MAX_BYTES = 12 * 1024 * 1024; // 12 MB por foto
 const MAX_FILES = 12;
 
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       try {
         const filename = `${id}${extension}`;
         await fs.writeFile(path.join(UPLOAD_DIR, filename), buffer);
-        uploaded.push({ id, url: `/uploads/${filename}`, alt: "" });
+        uploaded.push({ id, url: photoUrl(filename), alt: "" });
         continue;
       } catch {
         diskWritable = false;

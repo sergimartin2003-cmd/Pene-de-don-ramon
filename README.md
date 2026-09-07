@@ -127,9 +127,11 @@ lib/
   silhouette.ts             foto → contorno
   shoe-geometry.ts          contorno → malla 3D
   site.ts                   datos de la tienda
+  uploads.ts                dónde viven las fotos subidas
 scripts/                    generación de las fotos de ejemplo
 data/products.json          el catálogo
-public/uploads/             las fotos subidas
+data/uploads/               las fotos subidas
+public/uploads/seed/        las fotos de ejemplo (se regeneran en el build)
 ```
 
 ---
@@ -143,7 +145,7 @@ que escribir otro driver.
 | Sitio | Qué usa | ¿Sobrevive a un reinicio? |
 |---|---|---|
 | Vercel (con Blob Store conectado) | **Vercel Blob** | Sí |
-| VPS, Railway, Render, Docker, tu ordenador | `data/products.json` + `public/uploads/` | Sí |
+| VPS, Railway, Render, Docker, tu ordenador | `data/products.json` + `data/uploads/` | Sí |
 | Vercel sin Blob Store | Sólo memoria | **No** — el panel avisa |
 
 ### En Vercel: conectar el Blob Store
@@ -179,7 +181,12 @@ npm run build && npm start
 ```
 
 Funciona tal cual, sin configurar nada: el catálogo va a `data/products.json` y
-las fotos a `public/uploads/`. Haz copia de seguridad de esas dos rutas.
+las fotos a `data/uploads/`. **Haz copia de seguridad de la carpeta `data/`**: ahí
+está todo lo que no se puede regenerar.
+
+Las fotos subidas no se guardan en `/public` a propósito. Next indexa esa carpeta
+al compilar, así que un fichero añadido después nunca se llega a servir: daría 404
+hasta el siguiente despliegue. Salen por la ruta `/api/foto/<fichero>`.
 
 ## Las fotos de ejemplo
 
