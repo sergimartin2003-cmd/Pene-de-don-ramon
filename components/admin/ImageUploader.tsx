@@ -1,5 +1,6 @@
 "use client";
 
+import { upload as uploadToBlob } from "@vercel/blob/client";
 import { useId, useRef, useState } from "react";
 
 import type { ProductImage } from "@/lib/types";
@@ -7,14 +8,66 @@ import type { ProductImage } from "@/lib/types";
 /**
  * Lado máximo al que se reduce una foto antes de subirla.
  *
- * Una foto de móvil son 3000 x 4000 px y 5 MB. Sin reducirla: la subida tarda,
- * el navegador de quien visita la tienda se traga megas de más, y en Vercel ni
- * siquiera llega (las funciones rechazan cuerpos de más de 4,5 MB). A 2000 px
- * se sigue viendo perfecta a pantalla completa.
+ * No es por el límite del alojamiento: con subida directa al almacén el peso ya
+ * no estorba. Es por quien visita la tienda, que se descargaría megas de más.
+ * A 2600 px se puede ampliar la foto a pantalla completa y sigue nítida.
  */
-const MAX_SIDE = 2000;
-const KEEP_AS_IS_BYTES = 900 * 1024;
+const MAX_SIDE = 2600;
+const QUALITY = 0.9;
+const KEEP_AS_IS_BYTES = 1.5 * 1024 * 1024;
 const MAX_FOTOS = 12;
+
+/**
+ * Si la subida no avanza en este tiempo, se corta.
+ *
+ * Es un tope al parón, no a la duración: mientras entren bytes, una foto grande
+ * por una línea lenta puede tardar lo que necesite. Lo que no puede es quedarse
+ * en «Subiendo…» para siempre porque el almacén no conteste, que es justo lo
+ * que pasaba: los reintentos del SDK no atienden a la señal de cancelación.
+ */
+const STALL_MS = 20_000;
+
+type Progreso = (porcentaje: number) => void;
+
+async function subirAlAlmacen(
+  pathname: string,
+  file: File,
+  onProgreso: Progreso,
+): Promise<string> {
+  const controller = new AbortController();
+  let ultimoAvance = Date.now();
+  let vigilante: ReturnType<typeof setInterval> | undefined;
+
+  const seHaParado = new Promise<never>((_, reject) => {
+    vigilante = setInterval(() => {
+      if (Date.now() - ultimoAvance > STALL_MS) {
+        controller.abort();
+        reject(new Error("el almacén no responde. Comprueba el Blob Store del proyecto"));
+      }
+    }, 2000);
+  });
+
+  try {
+    const blob = await Promise.race([
+      uploadToBlob(pathname, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/blob",
+        contentType: file.type,
+        // Trocea los ficheros grandes y reintenta sólo la parte que falle.
+        multipart: file.size > 8 * 1024 * 1024,
+        abortSignal: controller.signal,
+        onUploadProgress: ({ percentage }: { percentage: number }) => {
+          ultimoAvance = Date.now();
+          onProgreso(percentage);
+        },
+      }),
+      seHaParado,
+    ]);
+    return blob.url;
+  } finally {
+    clearInterval(vigilante);
+  }
+}
 
 /** Reduce y recomprime en el navegador. Si no se puede, devuelve el original. */
 async function prepare(file: File): Promise<File> {
@@ -46,7 +99,7 @@ async function prepare(file: File): Promise<File> {
   bitmap.close();
 
   const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, "image/jpeg", 0.86),
+    canvas.toBlob(resolve, "image/jpeg", QUALITY),
   );
   if (!blob || blob.size >= file.size) return file;
 
@@ -58,10 +111,12 @@ async function prepare(file: File): Promise<File> {
 type Props = {
   images: ProductImage[];
   onChange: (images: ProductImage[]) => void;
+  /** true cuando hay Blob: la foto va del navegador al almacén, sin intermediario. */
+  directo: boolean;
 };
 
 /** Subida de varias fotos, con reordenación y texto alternativo por imagen. */
-export default function ImageUploader({ images, onChange }: Props) {
+export default function ImageUploader({ images, onChange, directo }: Props) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -94,6 +149,19 @@ export default function ImageUploader({ images, onChange }: Props) {
       setBusy(`Subiendo ${index + 1} de ${files.length}…`);
       try {
         const file = await prepare(original);
+
+        if (directo) {
+          const id = crypto.randomUUID();
+          const extension = file.type === "image/svg+xml" ? ".svg" : ".jpg";
+          const url = await subirAlAlmacen(`fotos/${id}${extension}`, file, (porcentaje) =>
+            setBusy(
+              `Subiendo ${index + 1} de ${files.length}… ${Math.round(porcentaje)}%`,
+            ),
+          );
+          added.push({ id, url, alt: "" });
+          continue;
+        }
+
         const body = new FormData();
         body.append("files", file);
 
@@ -171,9 +239,9 @@ export default function ImageUploader({ images, onChange }: Props) {
           )}
         </p>
         <p className="mt-2 text-xs text-stone">
-          JPG, PNG, WebP o AVIF. Se reducen solas a 2000 px antes de subirse, así
-          que da igual que vengan del móvil. La primera es la que se ve en la
-          parrilla y la que usa el 3D.
+          JPG, PNG, WebP o AVIF, del tamaño que sean: se reducen solas a 2600 px
+          antes de subirse, así que da igual que vengan del móvil. La primera es
+          la que se ve en la parrilla y la que usa el 3D.
         </p>
         <input
           id={inputId}

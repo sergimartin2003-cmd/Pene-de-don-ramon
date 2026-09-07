@@ -57,16 +57,28 @@ Desde el panel se puede:
 
 ## Las fotos
 
-Se pueden subir tal cual salen del móvil: **antes de enviarlas, el navegador las
-reduce a 2000 px de lado y las recomprime a JPG**. Una foto de iPhone de 4,6 MB
-acaba pesando unos 370 KB, con lo que la subida es casi instantánea, la tienda
-carga rápido y el envío entra de sobra en el límite de 4,5 MB por petición que
-tienen las funciones de Vercel.
+Se pueden subir tal cual salen del móvil, del tamaño que sean.
+
+**Con un Blob Store conectado, la foto va del navegador al almacén sin pasar por
+el servidor** (`/api/upload/blob` sólo firma el permiso). Eso quita de en medio
+el límite de 4,5 MB por petición que tienen las funciones de Vercel, que es lo
+que hacía imposible subir una foto de móvil. Los ficheros de más de 8 MB se
+suben troceados, reintentando sólo la parte que falle, y la barra muestra el
+porcentaje.
+
+Antes de enviarlas, **el navegador las reduce a 2600 px de lado y las recomprime
+a JPG de calidad 0,9**. No es por el límite del alojamiento, sino por quien
+visita la tienda: a 2600 px la foto se amplía a pantalla completa y sigue
+nítida, y `next/image` sirve a cada visitante una versión pequeña en AVIF o
+WebP, no el original.
 
 Se sube **una foto por petición**, no todas juntas: si una falla, las demás
-entran igual y el error dice cuál ha sido y por qué.
+entran igual y el error dice cuál ha sido y por qué. Y si el almacén deja de
+responder, la subida se corta a los 20 segundos sin avance con un aviso claro,
+en vez de quedarse girando para siempre.
 
 - **Formatos**: JPG, PNG, WebP y AVIF. Los SVG se admiten y se suben sin tocar.
+- **Tamaño**: hasta 50 MB por foto con Blob conectado; 25 MB con disco propio.
 - **HEIC de iPhone**: no vale, porque ningún navegador sabe convertirlo. El panel
   lo detecta (aunque el fichero venga renombrado a `.jpg`) y te dice cómo
   arreglarlo: en el iPhone, Ajustes → Cámara → Formatos → **Más compatible**.

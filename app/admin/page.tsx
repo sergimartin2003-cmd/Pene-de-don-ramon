@@ -5,6 +5,7 @@ import LoginForm from "@/components/admin/LoginForm";
 import { aiIsConfigured } from "@/lib/ai";
 import { isAdmin } from "@/lib/auth";
 import { listProducts, storageIsPersistent, storageLabel } from "@/lib/store";
+import { blobIsConfigured } from "@/lib/blob-store";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export default async function AdminPage() {
       aiConfigured={aiIsConfigured()}
       persistent={storageIsPersistent()}
       storage={storageLabel()}
+      directUpload={blobIsConfigured()}
     />
   );
 }

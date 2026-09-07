@@ -22,6 +22,8 @@ type Props = {
   /** null = producto nuevo. */
   product: Product | null;
   aiConfigured: boolean;
+  /** true cuando hay Blob conectado: las fotos suben directas al almacén. */
+  directUpload: boolean;
   onSaved: (product: Product) => void;
   onCancel: () => void;
 };
@@ -65,7 +67,13 @@ const fromLines = (value: string) =>
     .map((line) => line.trim())
     .filter(Boolean);
 
-export default function ProductForm({ product, aiConfigured, onSaved, onCancel }: Props) {
+export default function ProductForm({
+  product,
+  aiConfigured,
+  directUpload,
+  onSaved,
+  onCancel,
+}: Props) {
   const [draft, setDraft] = useState<Draft>(() => (product ? toDraft(product) : emptyDraft()));
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -338,7 +346,11 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
           title="Fotos"
           description="Puedes subir varias. La primera manda en la parrilla y es la que usa el 3D por defecto."
         >
-          <ImageUploader images={draft.images} onChange={(images) => patch({ images })} />
+          <ImageUploader
+            images={draft.images}
+            onChange={(images) => patch({ images })}
+            directo={directUpload}
+          />
         </Section>
 
         {/* Descripción */}

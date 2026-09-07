@@ -9,7 +9,7 @@ import { UPLOAD_DIR, photoUrl } from "@/lib/uploads";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const MAX_BYTES = 12 * 1024 * 1024; // 12 MB por foto
+const MAX_BYTES = 25 * 1024 * 1024; // tope de seguridad; el navegador ya reduce antes
 const MAX_FILES = 12;
 
 /**
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
   for (const file of files) {
     if (file.size > MAX_BYTES) {
       return Response.json(
-        { error: `pesa más de 12 MB` },
+        { error: "pesa más de 25 MB" },
         { status: 413 },
       );
     }

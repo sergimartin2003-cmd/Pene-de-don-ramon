@@ -16,6 +16,8 @@ type Props = {
   persistent: boolean;
   /** Dónde se está guardando el catálogo, para decirlo en claro. */
   storage: string;
+  /** true cuando hay Blob conectado: las fotos suben directas al almacén. */
+  directUpload: boolean;
 };
 
 type View = { mode: "list" } | { mode: "edit"; product: Product | null };
@@ -25,6 +27,7 @@ export default function AdminDashboard({
   aiConfigured,
   persistent,
   storage,
+  directUpload,
 }: Props) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
@@ -180,6 +183,7 @@ export default function AdminDashboard({
             key={view.product?.id ?? "nuevo"}
             product={view.product}
             aiConfigured={aiConfigured}
+            directUpload={directUpload}
             onSaved={handleSaved}
             onCancel={() => setView({ mode: "list" })}
           />
