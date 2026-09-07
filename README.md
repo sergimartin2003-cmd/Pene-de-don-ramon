@@ -188,17 +188,21 @@ Sin esto, Vercel tiene el disco en sólo lectura y lo que crees desde el panel s
 pierde en cuanto el servidor se reinicia. Son dos minutos:
 
 1. Entra en el proyecto en Vercel → pestaña **Storage**.
-2. **Create Database** → **Blob** → dale un nombre → **Create**.
+2. **Create Database** → **Blob** → dale un nombre → deja el acceso en
+   **público** (es el que necesita la tienda: las fotos tienen que poder
+   cargarse en el navegador del cliente) → **Create**.
 3. Conéctalo al proyecto (*Connect to Project*). Vercel inyecta solo la variable
    `BLOB_READ_WRITE_TOKEN`; no hay que copiar nada a mano.
 4. Vuelve a desplegar (**Deployments** → … → *Redeploy*).
 
 Al arrancar, la tienda detecta la variable y pasa a guardar ahí:
 
-- El catálogo va a `catalogo/products.json` en modo **privado**: contiene los
-  borradores, así que no debe poder leerlo cualquiera con la URL.
-- Las fotos van a `fotos/` en modo **público**, porque tienen que cargarse en el
-  navegador de quien visita la tienda.
+- Las fotos van a `fotos/`, públicas: tienen que cargarse en el navegador de
+  quien visita la tienda.
+- El catálogo va a `catalogo/<carpeta secreta>/products.json`. Está en el mismo
+  store público, pero el nombre de su carpeta se deriva del token del store: con
+  la URL de una foto se puede sacar el dominio del store, pero sin el token no se
+  puede adivinar dónde está el catálogo, que es lo que lleva los borradores.
 
 Para comprobar que ha funcionado, entra en `/admin`: bajo el título «Productos»
 pone en qué almacén está guardando, y el botón **Comprobar** hace una prueba real

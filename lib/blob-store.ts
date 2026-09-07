@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 import { BlobPreconditionFailedError, del, get, put } from "@vercel/blob";
 
@@ -18,7 +18,23 @@ import { BlobPreconditionFailedError, del, get, put } from "@vercel/blob";
  * páginas de la tienda. Mejor fallar rápido y seguir en memoria.
  */
 
-export const CATALOG_PATH = "catalogo/products.json";
+/**
+ * Ruta del catálogo dentro del store.
+ *
+ * Va en modo público, como las fotos: un store de Blob se crea con un modo de
+ * acceso, y las fotos de producto tienen que ser públicas para que las cargue
+ * el navegador de quien visita la tienda. Pedirlo privado en un store público
+ * falla, y la tienda se quedaría guardando sólo en memoria sin que se note.
+ *
+ * Para que el catálogo no quede a la vista (lleva los borradores), su carpeta
+ * se deriva del token del store: cualquiera puede ver la URL de una foto y de
+ * ahí sacar el dominio del store, pero sin el token no puede adivinar esto.
+ */
+function catalogPath(): string {
+  const token = process.env.BLOB_READ_WRITE_TOKEN ?? "";
+  const secreto = createHash("sha256").update(`catalogo:${token}`).digest("hex").slice(0, 32);
+  return `catalogo/${secreto}/products.json`;
+}
 
 const CATALOG_TIMEOUT_MS = 10_000;
 const PHOTO_TIMEOUT_MS = 30_000;
@@ -64,8 +80,8 @@ export async function readCatalog(): Promise<CatalogSnapshot | null> {
   // useCache: false — si leyéramos de la CDN, un cambio recién guardado podría
   // no verse todavía y el siguiente guardado pisaría datos buenos.
   const found = await withTimeout(
-    get(CATALOG_PATH, {
-      access: "private",
+    get(catalogPath(), {
+      access: "public",
       useCache: false,
       abortSignal: AbortSignal.timeout(CATALOG_TIMEOUT_MS),
     }),
@@ -85,8 +101,8 @@ export async function readCatalog(): Promise<CatalogSnapshot | null> {
  */
 export async function writeCatalog(text: string, etag: string | null): Promise<void> {
   await withTimeout(
-    put(CATALOG_PATH, text, {
-      access: "private",
+    put(catalogPath(), text, {
+      access: "public",
       contentType: "application/json",
       addRandomSuffix: false,
       abortSignal: AbortSignal.timeout(CATALOG_TIMEOUT_MS),
@@ -132,7 +148,7 @@ export async function probeBlob(): Promise<void> {
 
   await withTimeout(
     put(pathname, expected, {
-      access: "private",
+      access: "public",
       contentType: "text/plain",
       addRandomSuffix: false,
       allowOverwrite: true,
@@ -142,7 +158,7 @@ export async function probeBlob(): Promise<void> {
   );
 
   const found = await withTimeout(
-    get(pathname, { access: "private", useCache: false, abortSignal: signal }),
+    get(pathname, { access: "public", useCache: false, abortSignal: signal }),
     PROBE_TIMEOUT_MS,
   );
   if (!found || found.statusCode !== 200) {
