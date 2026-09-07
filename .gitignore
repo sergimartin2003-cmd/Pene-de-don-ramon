@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.pem
+.env
+.env*.local
+next-env.d.ts
+*.tsbuildinfo
+
+# El catálogo es contenido: se siembra solo en el primer arranque
+/data/*
+!/data/.gitkeep
+
+# Fotos subidas desde el panel de admin (contenido, no código)
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/seed/

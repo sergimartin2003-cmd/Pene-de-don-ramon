@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="pantalón">
+  <defs>
+    <radialGradient id="bg-pants-B9A88C-front" cx="50%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#eae1d0"/>
+      <stop offset="100%" stop-color="#c8bfae"/>
+    </radialGradient>
+    <linearGradient id="cloth-pants-B9A88C-front" x1="16%" y1="0%" x2="88%" y2="100%">
+      <stop offset="0%" stop-color="#ab9a7e"/>
+      <stop offset="44%" stop-color="#B9A88C"/>
+      <stop offset="100%" stop-color="#89785c"/>
+    </linearGradient>
+    <radialGradient id="fold-pants-B9A88C-front" cx="33%" cy="24%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+    </radialGradient>
+    <filter id="grain-pants-B9A88C-front">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <filter id="drop-pants-B9A88C-front" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    </filter>
+    <filter id="weave-pants-B9A88C-front">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+    </filter>
+    <clipPath id="body-pants-B9A88C-front"><path d="M318,250 L682,250 C706,250 718,264 717,288
+      C721,392 710,486 700,578
+      L680,1084 C679,1102 668,1112 649,1112
+      L548,1112 C530,1112 519,1102 518,1084
+      L500,716 L482,1084 C481,1102 470,1112 452,1112
+      L351,1112 C332,1112 321,1102 320,1084
+      L300,578 C290,486 279,392 283,288
+      C282,264 294,250 318,250 Z"/></clipPath>
+  </defs>
+
+  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-pants-B9A88C-front)"/>
+  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+
+  <g filter="url(#drop-pants-B9A88C-front)" >
+    
+
+    <path d="M318,250 L682,250 C706,250 718,264 717,288
+      C721,392 710,486 700,578
+      L680,1084 C679,1102 668,1112 649,1112
+      L548,1112 C530,1112 519,1102 518,1084
+      L500,716 L482,1084 C481,1102 470,1112 452,1112
+      L351,1112 C332,1112 321,1102 320,1084
+      L300,578 C290,486 279,392 283,288
+      C282,264 294,250 318,250 Z" fill="url(#cloth-pants-B9A88C-front)"/>
+    <g clip-path="url(#body-pants-B9A88C-front)">
+      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-pants-B9A88C-front)"/>
+      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-pants-B9A88C-front)" opacity="0.6"/>
+    </g>
+    <path d="M318,250 L682,250 C706,250 718,264 717,288
+      C721,392 710,486 700,578
+      L680,1084 C679,1102 668,1112 649,1112
+      L548,1112 C530,1112 519,1102 518,1084
+      L500,716 L482,1084 C481,1102 470,1112 452,1112
+      L351,1112 C332,1112 321,1102 320,1084
+      L300,578 C290,486 279,392 283,288
+      C282,264 294,250 318,250 Z" fill="none" stroke="#89785c" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+
+    
+
+    
+
+    <g fill="none" stroke="rgba(0,0,0,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M284,336 L716,336"/>
+      <path d="M500,336 L500,716"/>
+      <path d="M340,394 C340,438 360,460 394,460"/>
+      <path d="M660,394 C660,438 640,460 606,460"/>
+      <path d="M320,1056 L482,1056"/>
+      <path d="M518,1056 L680,1056"/>
+    </g>
+  </g>
+
+  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-pants-B9A88C-front)" opacity="0.05" style="mix-blend-mode:multiply"/>
+</svg>

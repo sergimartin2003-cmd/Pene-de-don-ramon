@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="gorra">
+  <defs>
+    <radialGradient id="bg-cap-16161A-front" cx="50%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#fbf5e9"/>
+      <stop offset="100%" stop-color="#d9d3c7"/>
+    </radialGradient>
+    <linearGradient id="cloth-cap-16161A-front" x1="16%" y1="0%" x2="88%" y2="100%">
+      <stop offset="0%" stop-color="#3a3a3e"/>
+      <stop offset="44%" stop-color="#16161A"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <radialGradient id="fold-cap-16161A-front" cx="33%" cy="24%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+    </radialGradient>
+    <filter id="grain-cap-16161A-front">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <filter id="drop-cap-16161A-front" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    </filter>
+    <filter id="weave-cap-16161A-front">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+    </filter>
+    <clipPath id="body-cap-16161A-front"><path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
+      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z"/></clipPath>
+  </defs>
+
+  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-cap-16161A-front)"/>
+  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+
+  <g filter="url(#drop-cap-16161A-front)" >
+    
+
+    <path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
+      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z" fill="url(#cloth-cap-16161A-front)"/>
+    <g clip-path="url(#body-cap-16161A-front)">
+      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-cap-16161A-front)"/>
+      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-cap-16161A-front)" opacity="0.6"/>
+    </g>
+    <path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
+      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
+       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="url(#cloth-cap-16161A-front)"/><path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
+       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="#000000" fill-opacity="0.28"/><path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
+       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+
+    
+
+    <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M500,392 L500,668"/>
+      <path d="M500,394 C418,436 372,528 366,668"/>
+      <path d="M500,394 C582,436 628,528 634,668"/>
+      <path d="M262,660 L738,660"/>
+    </g>
+  </g>
+
+  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-cap-16161A-front)" opacity="0.05" style="mix-blend-mode:multiply"/>
+</svg>

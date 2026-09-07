@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="chaqueta">
+  <defs>
+    <radialGradient id="bg-jacket-232B33-back" cx="50%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#fbf5e9"/>
+      <stop offset="100%" stop-color="#d9d3c7"/>
+    </radialGradient>
+    <linearGradient id="cloth-jacket-232B33-back" x1="16%" y1="0%" x2="88%" y2="100%">
+      <stop offset="0%" stop-color="#474f57"/>
+      <stop offset="44%" stop-color="#232B33"/>
+      <stop offset="100%" stop-color="#070f17"/>
+    </linearGradient>
+    <radialGradient id="fold-jacket-232B33-back" cx="33%" cy="24%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+    </radialGradient>
+    <filter id="grain-jacket-232B33-back">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <filter id="drop-jacket-232B33-back" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    </filter>
+    <filter id="weave-jacket-232B33-back">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+    </filter>
+    <clipPath id="body-jacket-232B33-back"><path d="M400,278 L468,320 L500,300 L532,320 L600,278
+      L670,292 C690,296 708,305 723,319
+      L884,502 C898,516 900,538 890,554
+      L826,682 C816,700 796,708 778,700
+      L746,686 C730,678 724,660 728,642
+      L710,531 L710,1030 C710,1054 696,1066 672,1066
+      L328,1066 C304,1066 290,1054 290,1030
+      L290,531 L272,642 C276,660 270,678 254,686
+      L222,700 C204,708 184,700 174,682
+      L110,554 C100,538 102,516 116,502
+      L277,319 C292,305 310,296 330,292 Z"/></clipPath>
+  </defs>
+
+  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-jacket-232B33-back)"/>
+  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+
+  <g filter="url(#drop-jacket-232B33-back)" transform="translate(1000,0) scale(-1,1)">
+    
+
+    <path d="M400,278 L468,320 L500,300 L532,320 L600,278
+      L670,292 C690,296 708,305 723,319
+      L884,502 C898,516 900,538 890,554
+      L826,682 C816,700 796,708 778,700
+      L746,686 C730,678 724,660 728,642
+      L710,531 L710,1030 C710,1054 696,1066 672,1066
+      L328,1066 C304,1066 290,1054 290,1030
+      L290,531 L272,642 C276,660 270,678 254,686
+      L222,700 C204,708 184,700 174,682
+      L110,554 C100,538 102,516 116,502
+      L277,319 C292,305 310,296 330,292 Z" fill="url(#cloth-jacket-232B33-back)"/>
+    <g clip-path="url(#body-jacket-232B33-back)">
+      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-jacket-232B33-back)"/>
+      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-jacket-232B33-back)" opacity="0.6"/>
+    </g>
+    <path d="M400,278 L468,320 L500,300 L532,320 L600,278
+      L670,292 C690,296 708,305 723,319
+      L884,502 C898,516 900,538 890,554
+      L826,682 C816,700 796,708 778,700
+      L746,686 C730,678 724,660 728,642
+      L710,531 L710,1030 C710,1054 696,1066 672,1066
+      L328,1066 C304,1066 290,1054 290,1030
+      L290,531 L272,642 C276,660 270,678 254,686
+      L222,700 C204,708 184,700 174,682
+      L110,554 C100,538 102,516 116,502
+      L277,319 C292,305 310,296 330,292 Z" fill="none" stroke="#070f17" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+
+    
+
+    
+
+    <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M500,300 L500,1066"/>
+      <path d="M710,531 L710,1030"/>
+      <path d="M290,531 L290,1030"/>
+      <path d="M400,278 L468,320"/>
+      <path d="M600,278 L532,320"/>
+      <path d="M348,742 L456,742"/>
+      <path d="M544,742 L652,742"/>
+      <path d="M778,700 L826,682"/>
+      <path d="M222,700 L174,682"/>
+      <path d="M290,1004 L710,1004"/>
+    </g>
+  </g>
+
+  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-jacket-232B33-back)" opacity="0.05" style="mix-blend-mode:multiply"/>
+</svg>
