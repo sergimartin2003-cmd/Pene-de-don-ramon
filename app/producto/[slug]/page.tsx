@@ -135,7 +135,7 @@ export default async function ProductPage({ params }: Params) {
               </dd>
             </div>
             <div>
-              <dt className="label text-stone">Corte</dt>
+              <dt className="label text-stone">Horma</dt>
               <dd className="mt-2">{FIT_LABELS[product.fit]}</dd>
             </div>
           </dl>

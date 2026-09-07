@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Tienda",
   description:
-    "Todas las piezas disponibles, con sus medidas talla a talla y su modelo en 3D.",
+    "Todos los modelos disponibles, con la equivalencia de cada número y su modelo en 3D.",
 };
 
 const SORTS = {
@@ -24,20 +24,20 @@ type SortKey = keyof typeof SORTS;
 
 const MEASURE_GUIDE = [
   {
-    title: "Pecho",
-    body: "Mide una camiseta tuya que te siente bien: en plano, de costura a costura, justo debajo de la manga. Ese número es el que aparece en la tabla.",
+    title: "Mide el pie",
+    body: "Talón contra la pared, un folio debajo y una marca en el dedo más largo. Mide esa distancia en centímetros, de pie y por la tarde: el pie se hincha a lo largo del día.",
   },
   {
-    title: "Largo",
-    body: "Desde el punto más alto del hombro hasta el bajo, siguiendo la caída de la prenda.",
+    title: "Los dos pies",
+    body: "Casi nadie los tiene iguales. Mide los dos y quédate con el número mayor de los dos.",
   },
   {
-    title: "Cintura",
-    body: "En un pantalón en plano, de lado a lado de la cintura y multiplicado por dos.",
+    title: "Medio centímetro",
+    body: "Deja ese hueco entre el dedo más largo y la puntera. Sin él, cuesta abajo los dedos chocan contra el final de la zapatilla.",
   },
   {
-    title: "Entre dos tallas",
-    body: "Si el corte es oversize o boxy, coge la pequeña. Si es ajustado o vas a llevar algo debajo, coge la grande.",
+    title: "Entre dos números",
+    body: "Si el modelo tiene la horma estrecha, sube. Si es ancha, o vas a llevar calcetín grueso, baja. En cada ficha ponemos cuál es.",
   },
 ];
 
@@ -75,12 +75,12 @@ export default async function ShopPage({
           <span className="text-ember">/</span> Tienda
         </p>
         <h1 className="display-lg mt-5 max-w-3xl text-balance">
-          {category ? CATEGORY_LABELS[category] : "Toda la colección"}
+          {category ? CATEGORY_LABELS[category] : "Todo el catálogo"}
         </h1>
         <p className="mt-6 max-w-lg text-pretty text-stone">
-          {filtered.length} {filtered.length === 1 ? "pieza disponible" : "piezas disponibles"}.
-          Toca cualquiera para ver sus fotos, girarla en 3D y consultar las medidas
-          exactas de cada talla.
+          {filtered.length} {filtered.length === 1 ? "modelo disponible" : "modelos disponibles"}.
+          Toca cualquiera para ver sus fotos, girarla en 3D y comprobar qué número te
+          toca.
         </p>
       </section>
 
@@ -137,8 +137,8 @@ export default async function ShopPage({
           <div className="border border-ink/12 px-6 py-20 text-center">
             <p className="display-md">Aquí no hay nada todavía.</p>
             <p className="mx-auto mt-5 max-w-sm text-pretty text-stone">
-              Esta categoría está vacía ahora mismo. Echa un vistazo al resto de la
-              colección.
+              Esta categoría está vacía ahora mismo. Echa un vistazo al resto del
+              catálogo.
             </p>
             <Link
               href="/tienda"
@@ -164,11 +164,11 @@ export default async function ShopPage({
             <span className="text-ember">↳</span> Guía de tallas
           </p>
           <h2 className="display-lg mt-5 max-w-2xl text-balance">
-            Cómo leer las medidas.
+            Cómo saber tu número.
           </h2>
           <p className="mt-6 max-w-xl text-pretty text-stone">
-            Cada ficha lleva su propia tabla, porque el patrón cambia de una prenda a
-            otra. Todas las medidas son de la prenda en plano, no del cuerpo.
+            Cada ficha lleva su propia tabla, porque no todos los modelos tallan igual.
+            Mide el pie una vez y compáralo con la columna de centímetros.
           </p>
         </Reveal>
 

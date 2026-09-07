@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
   if (!brief?.name?.trim()) {
     return Response.json(
-      { error: "Pon al menos el nombre de la prenda antes de generar el texto." },
+      { error: "Pon al menos el nombre del modelo antes de generar el texto." },
       { status: 400 },
     );
   }

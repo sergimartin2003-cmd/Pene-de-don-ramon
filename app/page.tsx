@@ -17,18 +17,18 @@ export const dynamic = "force-dynamic";
 const STEPS = [
   {
     index: "01",
-    title: "Mira la pieza",
-    body: "Cada prenda tiene sus fotos, su modelo en 3D para girarlo y sus medidas reales talla a talla.",
+    title: "Mira el modelo",
+    body: "Cada zapatilla tiene sus fotos, su modelo en 3D para girarlo y la equivalencia real de cada número.",
   },
   {
     index: "02",
     title: "Escríbenos",
-    body: "Aquí no hay carrito. Nos preguntas por WhatsApp o por correo con la talla que quieras.",
+    body: "Aquí no hay carrito. Nos preguntas por WhatsApp o por correo con tu número.",
   },
   {
     index: "03",
-    title: "La reservamos",
-    body: "Te confirmamos si queda, la apartamos y quedamos para recogerla en el estudio o te la enviamos.",
+    title: "Te las apartamos",
+    body: "Te confirmamos si queda tu número, las apartamos y quedamos para recogerlas en la tienda o te las enviamos.",
   },
 ];
 
@@ -45,7 +45,7 @@ export default async function HomePage() {
       <Hero product={hero} count={products.length} />
 
       <Marquee
-        items={[site.claim, "Tiradas cortas", "Sin carrito, trato directo", "Cada pieza en 3D"]}
+        items={[site.claim, "Números del 39 al 46", "Sin carrito, trato directo", "Cada par en 3D"]}
         className="bg-ink text-bone/60"
       />
 
@@ -54,14 +54,14 @@ export default async function HomePage() {
         <SectionHeading
           index="01"
           eyebrow="Selección"
-          title="Lo que hay ahora en el estudio"
-          intro="Producción corta y sin reposición automática: cuando una talla se acaba, se acaba."
+          title="Lo que hay ahora en tienda"
+          intro="Traemos pocos pares de cada modelo. Cuando un número se acaba, no siempre vuelve."
           action={
             <Link
               href="/tienda"
               className="label link-underline inline-flex items-center gap-2 py-1"
             >
-              Ver los {products.length} artículos
+              Ver los {products.length} modelos
               <span aria-hidden="true">→</span>
             </Link>
           }
@@ -81,24 +81,24 @@ export default async function HomePage() {
         <div className="shell grid items-center gap-12 md:grid-cols-12 md:gap-16">
           <Reveal className="md:col-span-6">
             <p className="label flex items-center gap-3 text-bone/45">
-              <span className="text-ember">02</span> El taller
+              <span className="text-ember">02</span> La tienda
             </p>
             <h2 className="display-lg mt-6 text-balance">
-              Poca cantidad,
+              Pocos modelos,
               <br />
-              mucho tiempo por prenda.
+              todos andados antes.
             </h2>
             <p className="mt-7 max-w-md text-pretty text-bone/65">
-              Cada tirada sale de un patrón que probamos hasta que cae bien de
-              verdad. Compramos el tejido por metros contados, cosemos en talleres
-              cercanos y paramos cuando se acaba. Por eso no verás cien referencias:
-              verás las que aguantan.
+              Nada entra al catálogo sin habérnoslo puesto unos días. Así sabemos si
+              talla justo, si el talón baila, si el ante se pela o si la suela pierde
+              agarro con lluvia. Por eso no verás cien referencias: verás las que nos
+              ponemos nosotros.
             </p>
             <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-bone/15 pt-8">
               {[
                 ["Desde", String(site.since)],
-                ["Piezas", `${products.length}`],
-                ["Taller", site.city],
+                ["Modelos", `${products.length}`],
+                ["Tienda", site.city],
               ].map(([term, value]) => (
                 <div key={term}>
                   <dt className="label text-bone/40">{term}</dt>
@@ -110,13 +110,13 @@ export default async function HomePage() {
               href="/estudio"
               className="label link-underline mt-10 inline-flex items-center gap-2"
             >
-              Conocer el estudio <span aria-hidden="true">→</span>
+              Conocer la tienda <span aria-hidden="true">→</span>
             </Link>
           </Reveal>
 
           {editorial?.images[0] && (
             <Reveal className="md:col-span-6" delay={120}>
-              <div className="relative aspect-4/5 overflow-hidden bg-ink-soft md:aspect-3/4">
+              <div className="relative aspect-square overflow-hidden bg-ink-soft md:aspect-square">
                 <Parallax speed={-0.06} className="absolute -inset-y-10 inset-x-0">
                   <div className="relative h-full w-full">
                     <ProductImage
@@ -139,7 +139,7 @@ export default async function HomePage() {
           index="03"
           eyebrow="Modelo 3D"
           title="Gírala antes de preguntar."
-          intro="A partir de las fotos reconstruimos la pieza en tres dimensiones. Se arrastra con el dedo o con el ratón, se acerca y se ve el volumen que una foto plana no cuenta."
+          intro="A partir de las fotos reconstruimos la zapatilla en tres dimensiones. Se arrastra con el dedo o con el ratón, se acerca y se ve el perfil y el volumen que una foto plana no cuenta."
         />
         {showcase && (
           <Reveal className="mt-12">
@@ -164,7 +164,7 @@ export default async function HomePage() {
                     {CATEGORY_LABELS[category]}
                   </span>
                   <span className="label flex items-center gap-5 text-stone">
-                    {count} {count === 1 ? "pieza" : "piezas"}
+                    {count} {count === 1 ? "modelo" : "modelos"}
                     <span
                       className="text-ember transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-x-2"
                       aria-hidden="true"
@@ -201,20 +201,20 @@ export default async function HomePage() {
       {/* Cierre */}
       <section className="shell mt-24 md:mt-36">
         <Reveal className="bg-sand/70 px-6 py-16 text-center md:px-16 md:py-24">
-          <p className="label text-stone">¿Dudas con la talla?</p>
+          <p className="label text-stone">¿Dudas con el número?</p>
           <h2 className="display-lg mx-auto mt-5 max-w-2xl text-balance">
-            Pregúntanos y te decimos cuál te sirve.
+            Dinos cuánto te mide el pie.
           </h2>
           <p className="mx-auto mt-6 max-w-md text-pretty text-stone">
-            Contestamos con las medidas en la mano. Si dudas entre dos tallas, te
-            decimos cuál coge cada uno de nosotros.
+            Con la medida en centímetros te decimos qué número coger en cada modelo.
+            No todos tallan igual, y eso no sale en la caja.
           </p>
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/tienda"
               className="label bg-ink px-7 py-4.5 text-bone transition-colors duration-300 hover:bg-ember"
             >
-              Ver la colección
+              Ver el catálogo
             </Link>
             <a
               href={`mailto:${site.email}`}
@@ -241,16 +241,16 @@ function Hero({ product, count }: { product?: Product; count: number }) {
             className="display-xl mt-6 animate-[var(--animate-rise)] text-balance"
             style={{ animationDelay: "90ms" }}
           >
-            Ropa que
+            Pocas zapas,
             <br />
-            <span className="italic text-ember">aguanta</span> el uso.
+            <span className="italic text-ember">bien</span> elegidas.
           </h1>
           <p
             className="mt-8 max-w-md animate-[var(--animate-rise)] text-pretty text-lg text-stone"
             style={{ animationDelay: "180ms" }}
           >
-            {site.claim} Míralas en 3D, consulta las medidas exactas y escríbenos.
-            Sin carrito, sin cuentas, sin prisa.
+            {site.claim} Míralas en 3D, mira qué número te toca en cada una y
+            escríbenos. Sin carrito, sin cuentas, sin prisa.
           </p>
           <div
             className="mt-10 flex animate-[var(--animate-rise)] flex-wrap items-center gap-3"
@@ -260,13 +260,13 @@ function Hero({ product, count }: { product?: Product; count: number }) {
               href="/tienda"
               className="label bg-ink px-7 py-4.5 text-bone transition-colors duration-300 hover:bg-ember"
             >
-              Ver {count} piezas
+              Ver {count} modelos
             </Link>
             <Link
               href="/estudio"
               className="label border border-ink/25 px-7 py-4.5 transition-colors duration-300 hover:border-ink"
             >
-              El estudio
+              Nosotros
             </Link>
           </div>
         </div>
@@ -278,7 +278,7 @@ function Hero({ product, count }: { product?: Product; count: number }) {
               className="group block animate-[var(--animate-rise)]"
               style={{ animationDelay: "220ms" }}
             >
-              <div className="relative aspect-4/5 overflow-hidden bg-sand">
+              <div className="relative aspect-square overflow-hidden bg-sand">
                 <ProductImage
                   src={product.images[0].url}
                   alt={product.images[0].alt || product.name}

@@ -196,6 +196,7 @@ function normalize(input: ProductInput): Omit<Product, "id" | "slug" | "createdA
     colorName: (input.colorName ?? "").trim(),
     colorHex: /^#[0-9a-f]{6}$/i.test(input.colorHex ?? "") ? input.colorHex : "#111113",
     fit: input.fit,
+    sizeAdvice: (input.sizeAdvice ?? "").trim(),
     materials: (input.materials ?? []).map((m) => m.trim()).filter(Boolean),
     care: (input.care ?? "").trim(),
     description: (input.description ?? "").trim(),
@@ -209,7 +210,7 @@ function normalize(input: ProductInput): Omit<Product, "id" | "slug" | "createdA
     },
     model3d: {
       ...model3d,
-      depth: Math.min(0.4, Math.max(0.02, Number(model3d.depth) || 0.13)),
+      depth: Math.min(0.6, Math.max(0.02, Number(model3d.depth) || 0.28)),
       backgroundTolerance: Math.min(
         160,
         Math.max(0, Number(model3d.backgroundTolerance) || 0),

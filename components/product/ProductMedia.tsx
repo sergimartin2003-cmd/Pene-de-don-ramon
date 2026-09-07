@@ -10,7 +10,7 @@ import type { Product } from "@/lib/types";
 const Product3DViewer = dynamic(() => import("@/components/three/Product3DViewer"), {
   ssr: false,
   loading: () => (
-    <div className="grid aspect-4/5 place-items-center bg-sand/60">
+    <div className="grid aspect-square place-items-center bg-sand/60">
       <span className="block h-7 w-7 animate-spin rounded-full border-2 border-ink/15 border-t-ember" />
     </div>
   ),
@@ -43,7 +43,7 @@ export default function ProductMedia({ product }: Props) {
   }, [zoomed, images.length]);
 
   if (images.length === 0) {
-    return <div className="aspect-4/5 bg-sand" aria-hidden="true" />;
+    return <div className="aspect-square bg-sand" aria-hidden="true" />;
   }
 
   return (
@@ -76,7 +76,7 @@ export default function ProductMedia({ product }: Props) {
           <button
             type="button"
             onClick={() => setZoomed(true)}
-            className="relative block aspect-4/5 w-full cursor-zoom-in overflow-hidden bg-sand"
+            className="relative block aspect-square w-full cursor-zoom-in overflow-hidden bg-sand"
             aria-label="Ampliar la foto"
           >
             <ProductImage
@@ -97,7 +97,7 @@ export default function ProductMedia({ product }: Props) {
                   onClick={() => setCurrent(index)}
                   aria-label={`Ver la foto ${index + 1} de ${images.length}`}
                   aria-current={index === current}
-                  className={`relative aspect-4/5 w-20 shrink-0 overflow-hidden bg-sand transition-opacity duration-300 md:w-24 ${
+                  className={`relative aspect-square w-20 shrink-0 overflow-hidden bg-sand transition-opacity duration-300 md:w-24 ${
                     index === current ? "opacity-100" : "opacity-45 hover:opacity-80"
                   }`}
                 >
@@ -124,11 +124,11 @@ export default function ProductMedia({ product }: Props) {
             sourceIndex={product.model3d.sourceImageIndex}
             source={product.model3d.source}
             glbUrl={product.model3d.glbUrl}
-            className="aspect-4/5 w-full"
+            className="aspect-square w-full"
           />
           <p className="mt-3 text-sm leading-relaxed text-stone">
-            Modelo generado a partir de las fotos de la prenda. Sirve para hacerse
-            con el volumen y la caída; el color de referencia son las fotos.
+            Modelo generado a partir de las fotos de la zapatilla. Sirve para hacerse
+            con el volumen y el perfil; el color de referencia son las fotos.
           </p>
         </div>
       )}

@@ -31,12 +31,13 @@ type Draft = ProductInput;
 function emptyDraft(): Draft {
   return {
     name: "",
-    category: "camisetas",
+    category: "lifestyle",
     price: 0,
     compareAtPrice: null,
     colorName: "",
     colorHex: "#111114",
-    fit: "regular",
+    fit: "normal",
+    sizeAdvice: "",
     materials: [],
     care: "",
     description: "",
@@ -95,6 +96,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
           category: draft.category,
           fit: draft.fit,
           colorName: draft.colorName,
+          sizeAdvice: draft.sizeAdvice,
           materials: draft.materials,
           details: draft.details,
           care: draft.care,
@@ -181,7 +183,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
                 type="text"
                 value={draft.name}
                 onChange={(event) => patch({ name: event.target.value })}
-                placeholder="Camiseta Ónix"
+                placeholder="Court Ónix"
                 className={inputClass}
                 required
               />
@@ -204,7 +206,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
               </select>
             </Field>
 
-            <Field label="Corte" htmlFor="corte">
+            <Field label="Horma" htmlFor="corte">
               <select
                 id="corte"
                 value={draft.fit}
@@ -287,6 +289,21 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
             </Field>
 
             <Field
+              label="Tallaje"
+              htmlFor="tallaje"
+              hint="Se muestra junto al selector de tallas: «Talla normal», «Pide media talla más»…"
+            >
+              <input
+                id="tallaje"
+                type="text"
+                value={draft.sizeAdvice}
+                onChange={(event) => patch({ sizeAdvice: event.target.value })}
+                placeholder="Talla normal"
+                className={inputClass}
+              />
+            </Field>
+
+            <Field
               label="Etiqueta"
               htmlFor="etiqueta"
               hint="Opcional. Un texto corto sobre la foto: «Nuevo», «Última talla L»…"
@@ -345,7 +362,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
               patch({ description: event.target.value, descriptionByAI: false })
             }
             rows={5}
-            placeholder="Rellena el nombre, el corte y los materiales y pulsa «Generar con IA»."
+            placeholder="Rellena el nombre, la horma y los materiales y pulsa «Generar con IA»."
             className={`${inputClass} resize-y leading-relaxed`}
             aria-label="Descripción del producto"
           />
@@ -367,7 +384,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
                 value={toLines(draft.details)}
                 onChange={(event) => patch({ details: fromLines(event.target.value) })}
                 rows={4}
-                placeholder={"Cuello acanalado reforzado\nCostura lateral abierta"}
+                placeholder={"Talonera reforzada\nSuela de caucho de 12 mm"}
                 className={`${inputClass} resize-y`}
               />
             </Field>
@@ -378,7 +395,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
                 value={toLines(draft.materials)}
                 onChange={(event) => patch({ materials: fromLines(event.target.value) })}
                 rows={4}
-                placeholder={"Algodón orgánico 100%\nPunto de 240 g/m²"}
+                placeholder={"Piel flor de vacuno\nSuela de caucho"}
                 className={`${inputClass} resize-y`}
               />
             </Field>
@@ -389,7 +406,7 @@ export default function ProductForm({ product, aiConfigured, onSaved, onCancel }
                 type="text"
                 value={draft.care}
                 onChange={(event) => patch({ care: event.target.value })}
-                placeholder="Lavar a 30°, del revés. No usar secadora."
+                placeholder="Cepillo suave y jabón neutro. No meter en la lavadora."
                 className={inputClass}
               />
             </Field>

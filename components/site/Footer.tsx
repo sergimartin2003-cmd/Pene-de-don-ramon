@@ -14,7 +14,7 @@ export default function Footer() {
   return (
     <footer className="mt-28 bg-ink text-bone md:mt-40">
       <Marquee
-        items={[site.claim, "Tiradas cortas", "Hecho en España", "Atendemos por WhatsApp"]}
+        items={[site.claim, "Pocos pares por número", "Del 39 al 46", "Atendemos por WhatsApp"]}
         className="border-b border-bone/12 text-bone/55"
       />
 
@@ -29,7 +29,7 @@ export default function Footer() {
         </div>
 
         <nav className="md:col-span-3" aria-label="Categorías">
-          <p className="label text-bone/40">Colección</p>
+          <p className="label text-bone/40">Catálogo</p>
           <ul className="mt-5 space-y-3">
             {CATEGORIES.map((category) => (
               <li key={category}>
@@ -45,7 +45,7 @@ export default function Footer() {
         </nav>
 
         <div className="md:col-span-4">
-          <p className="label text-bone/40">Estudio</p>
+          <p className="label text-bone/40">Tienda</p>
           <address className="mt-5 space-y-3 not-italic text-bone/80">
             <p>{site.address}</p>
             <p className="text-bone/55">{site.hours}</p>
@@ -70,7 +70,7 @@ export default function Footer() {
         </p>
         <div className="label flex items-center gap-6">
           <Link href="/estudio" className="transition-colors hover:text-bone">
-            Sobre el estudio
+            Nosotros
           </Link>
           <Link href="/admin" className="transition-colors hover:text-bone">
             Panel

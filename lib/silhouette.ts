@@ -1,8 +1,8 @@
 /**
- * Reconstrucción de la silueta de una prenda a partir de una foto.
+ * Reconstrucción de la silueta de una zapatilla a partir de una foto.
  *
  * Todo ocurre en el navegador, sobre un canvas: se estima el color del fondo
- * a partir del borde de la imagen, se separa la prenda, se queda con la mancha
+ * a partir del borde de la imagen, se separa la zapatilla, se queda con la mancha
  * más grande y se traza su contorno. Ese contorno es lo que después se extruye
  * para obtener el modelo 3D de la ficha de producto.
  *
@@ -18,7 +18,7 @@ export type Silhouette = {
   contour: Point[];
   /** Ancho / alto de la imagen original. */
   aspect: number;
-  /** Color medio de la prenda, para las paredes del modelo. */
+  /** Color medio del modelo, para las paredes del sólido. */
   averageColor: string;
   /** true si se ha podido recortar el fondo; false si se usó el encuadre. */
   cropped: boolean;

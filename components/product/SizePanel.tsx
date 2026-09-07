@@ -41,9 +41,16 @@ export default function SizePanel({ product }: Props) {
         )}
       </div>
 
+      {product.sizeAdvice && (
+        <p className="mt-3 flex gap-2.5 text-sm text-stone">
+          <span aria-hidden="true" className="mt-1.5 block size-1 shrink-0 bg-ember" />
+          {product.sizeAdvice}
+        </p>
+      )}
+
       {soldOut ? (
         <p className="mt-4 border border-ink/12 bg-sand/50 p-4 text-sm text-stone">
-          Ahora mismo no queda ninguna talla. Escríbenos y te avisamos si vuelve a
+          Ahora mismo no queda ningún número. Escríbenos y te avisamos si vuelve a
           entrar.
         </p>
       ) : (
@@ -77,7 +84,9 @@ export default function SizePanel({ product }: Props) {
         <p className="mt-3 text-sm text-stone">
           Talla {selected.size}:{" "}
           {product.sizeChart.columns
-            .map((column) => `${column.label} ${selected.values[column.key] ?? "—"} ${column.unit}`)
+            .map((column) =>
+              `${column.label} ${selected.values[column.key] ?? "—"}${column.unit ? ` ${column.unit}` : ""}`,
+            )
             .join(" · ")}
         </p>
       )}
@@ -86,7 +95,7 @@ export default function SizePanel({ product }: Props) {
         <div id="tabla-tallas" className="mt-5 overflow-x-auto border border-ink/12">
           <table className="w-full min-w-[26rem] border-collapse text-left text-sm">
             <caption className="sr-only">
-              Medidas de {product.name} por talla
+              Tallas de {product.name} y sus equivalencias
             </caption>
             <thead>
               <tr className="bg-sand/70">
@@ -95,7 +104,9 @@ export default function SizePanel({ product }: Props) {
                 </th>
                 {product.sizeChart.columns.map((column) => (
                   <th key={column.key} scope="col" className="label px-4 py-3 font-medium">
-                    {column.label} <span className="text-stone">({column.unit})</span>
+                    {column.label}
+                    {/* No todas las columnas tienen unidad: US y UK son números sueltos. */}
+                    {column.unit && <span className="text-stone"> ({column.unit})</span>}
                   </th>
                 ))}
               </tr>

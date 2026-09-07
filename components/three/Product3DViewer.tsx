@@ -5,7 +5,7 @@ import { ContactShadows, OrbitControls, useGLTF } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-import { buildGarmentGeometry, createFabricNormalMap } from "@/lib/garment-geometry";
+import { buildShoeGeometry, createMaterialNormalMap } from "@/lib/shoe-geometry";
 import { extractSilhouette } from "@/lib/silhouette";
 
 type Props = {
@@ -22,7 +22,7 @@ type Build = {
   geometry: THREE.ExtrudeGeometry;
   materials: THREE.Material[];
   cropped: boolean;
-  /** Escala que encuadra la prenda igual venga de la foto que venga. */
+  /** Escala que encuadra el modelo igual venga de la foto que venga. */
   fit: number;
 };
 
@@ -95,12 +95,12 @@ export default function Product3DViewer({
         backMap.repeat.x = -1;
         backMap.offset.x = 1;
 
-        const { geometry, fit } = buildGarmentGeometry(
+        const { geometry, fit } = buildShoeGeometry(
           silhouette.contour,
           silhouette.aspect,
           depth,
         );
-        const fabric = createFabricNormalMap();
+        const material = createMaterialNormalMap();
         const normalScale = new THREE.Vector2(0.32, 0.32);
 
         const materials: THREE.Material[] = [
@@ -108,21 +108,21 @@ export default function Product3DViewer({
             map: frontMap,
             roughness: 0.82,
             metalness: 0,
-            normalMap: fabric,
+            normalMap: material,
             normalScale,
           }),
           new THREE.MeshStandardMaterial({
             map: backMap,
             roughness: 0.86,
             metalness: 0,
-            normalMap: fabric,
+            normalMap: material,
             normalScale,
           }),
           new THREE.MeshStandardMaterial({
             color: new THREE.Color(silhouette.averageColor).multiplyScalar(0.82),
             roughness: 0.95,
             metalness: 0,
-            normalMap: fabric,
+            normalMap: material,
             normalScale: new THREE.Vector2(0.5, 0.5),
           }),
         ];

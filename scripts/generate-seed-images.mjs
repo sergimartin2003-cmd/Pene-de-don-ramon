@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import { GARMENTS } from "./garment-paths.mjs";
+import { SHOES } from "./shoe-paths.mjs";
 
 /**
  * Genera los "studio shots" del catálogo de ejemplo como SVG.
@@ -24,110 +24,124 @@ function luminance(hex) {
   return (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
 }
 
-function studioShot({ garment, color, view, backdrop = "#EDE7DB", seed = 7 }) {
-  const g = GARMENTS[garment];
-  const light = shade(color, luminance(color) > 0.6 ? -14 : 36);
-  const dark = shade(color, luminance(color) > 0.6 ? -48 : -28);
-  const seamColor = luminance(color) > 0.55 ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.22)";
+function studioShot({ shoe, color, view, sole = "#F1ECE2", backdrop = "#EDE7DB", seed = 7 }) {
+  const s = SHOES[shoe];
+  const pale = luminance(color) > 0.6;
+  const light = shade(color, pale ? -14 : 38);
+  const dark = shade(color, pale ? -50 : -30);
+  const seamColor = pale ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.24)";
   const mirrored = view === "back";
-  const detail = view === "detail";
-  const viewBox = detail ? g.detail : "0 0 1000 1250";
+  const viewBox = view === "detail" ? s.detail : "0 0 1200 1200";
 
   // Sufijo único por fichero: evita que dos SVG en la misma página compartan
   // los identificadores de sus degradados y se pisen los colores.
-  const uid = `${garment}-${color.slice(1)}-${view}`;
+  const uid = `${shoe}-${color.slice(1)}-${view}`;
   const ref = (name) => `${name}-${uid}`;
 
-  const piece = (d, fill, opacity = 1) =>
-    `<path d="${d}" fill="${fill}" fill-opacity="${opacity}"/>`;
+  const outline = (d, stroke = dark) =>
+    `<path d="${d}" fill="none" stroke="${stroke}" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="1000" height="1250" role="img" aria-label="${g.label}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="1200" height="1200" role="img" aria-label="${s.label}">
   <defs>
-    <radialGradient id="${ref("bg")}" cx="50%" cy="36%" r="80%">
+    <radialGradient id="${ref("bg")}" cx="50%" cy="38%" r="78%">
       <stop offset="0%" stop-color="${shade(backdrop, 14)}"/>
       <stop offset="100%" stop-color="${shade(backdrop, -20)}"/>
     </radialGradient>
-    <linearGradient id="${ref("cloth")}" x1="16%" y1="0%" x2="88%" y2="100%">
+    <linearGradient id="${ref("upper")}" x1="14%" y1="0%" x2="86%" y2="100%">
       <stop offset="0%" stop-color="${light}"/>
-      <stop offset="44%" stop-color="${color}"/>
+      <stop offset="46%" stop-color="${color}"/>
       <stop offset="100%" stop-color="${dark}"/>
     </linearGradient>
-    <radialGradient id="${ref("fold")}" cx="33%" cy="24%" r="72%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+    <linearGradient id="${ref("mid")}" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${shade(sole, -2)}"/>
+      <stop offset="100%" stop-color="${shade(sole, -34)}"/>
+    </linearGradient>
+    <radialGradient id="${ref("fold")}" cx="32%" cy="22%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
       <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
     </radialGradient>
     <filter id="${ref("grain")}">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="${seed}"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
     <filter id="${ref("drop")}" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#3a3128" flood-opacity="0.10"/>
     </filter>
     <filter id="${ref("weave")}">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="${seed + 2}" result="n"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.72" numOctaves="2" seed="${seed + 2}" result="n"/>
       <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
     </filter>
-    <clipPath id="${ref("body")}"><path d="${g.path}"/></clipPath>
+    <clipPath id="${ref("body")}"><path d="${s.path}"/></clipPath>
   </defs>
 
-  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#${ref("bg")})"/>
-  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+  <rect x="-400" y="-400" width="2000" height="2000" fill="url(#${ref("bg")})"/>
+  <ellipse cx="600" cy="890" rx="440" ry="26" fill="#3a3128" opacity="0.07"/>
 
-  <g filter="url(#${ref("drop")})" ${mirrored ? 'transform="translate(1000,0) scale(-1,1)"' : ""}>
-    ${(g.under ?? []).map((d) => piece(d, dark)).join("\n    ")}
+  <g filter="url(#${ref("drop")})" ${mirrored ? 'transform="translate(1200,0) scale(-1,1)"' : ""}>
+    ${s.sole ? `<path d="${s.sole}" fill="${shade(sole, -76)}"/>${outline(s.sole, shade(sole, -110))}` : ""}
+    ${s.midsole ? `<path d="${s.midsole}" fill="url(#${ref("mid")})"/>${outline(s.midsole, shade(sole, -80))}` : ""}
 
-    <path d="${g.path}" fill="url(#${ref("cloth")})"/>
+    <path d="${s.path}" fill="url(#${ref("upper")})"/>
     <g clip-path="url(#${ref("body")})">
-      <rect x="0" y="0" width="1000" height="1250" fill="url(#${ref("fold")})"/>
-      <rect x="0" y="0" width="1000" height="1250" filter="url(#${ref("weave")})" opacity="0.6"/>
+      <rect x="0" y="0" width="1200" height="1200" fill="url(#${ref("fold")})"/>
+      <rect x="0" y="0" width="1200" height="1200" filter="url(#${ref("weave")})" opacity="0.6"/>
+      ${(s.panels ?? [])
+        .map((d) => `<path d="${d}" fill="${dark}" fill-opacity="0.30"/>${outline(d)}`)
+        .join("\n      ")}
     </g>
-    <path d="${g.path}" fill="none" stroke="${dark}" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+    ${outline(s.path)}
 
-    ${(g.parts ?? []).map((d) => `<path d="${d}" fill="url(#${ref("cloth")})"/><path d="${d}" fill="${dark}" fill-opacity="0.28"/><path d="${d}" fill="none" stroke="${dark}" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>`).join("\n    ")}
-
-    ${(g.over ?? []).map((d) => `${piece(d, dark, 0.14)}<path d="${d}" fill="none" stroke="${dark}" stroke-opacity="0.5" stroke-width="2.5"/>`).join("\n    ")}
+    ${s.opening ? `<path d="${s.opening}" fill="none" stroke="${shade(dark, -18)}" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/>` : ""}
 
     <g fill="none" stroke="${seamColor}" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
-      ${(g.seams ?? []).map((d) => `<path d="${d}"/>`).join("\n      ")}
+      ${(s.seams ?? []).map((d) => `<path d="${d}"/>`).join("\n      ")}
     </g>
+
+    ${(s.eyelets ?? [])
+      .map(
+        ([cx, cy]) =>
+          `<circle cx="${cx}" cy="${cy}" r="9" fill="${shade(dark, -22)}" fill-opacity="0.75"/>` +
+          `<circle cx="${cx}" cy="${cy}" r="4" fill="${shade(sole, -10)}"/>`,
+      )
+      .join("\n    ")}
   </g>
 
-  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#${ref("grain")})" opacity="0.05" style="mix-blend-mode:multiply"/>
+  <rect x="-400" y="-400" width="2000" height="2000" filter="url(#${ref("grain")})" opacity="0.05" style="mix-blend-mode:multiply"/>
 </svg>`;
 }
 
 const SHOTS = [
-  { file: "onix-1.svg", garment: "tee", color: "#16161A", view: "front" },
-  { file: "onix-2.svg", garment: "tee", color: "#16161A", view: "back" },
-  { file: "onix-3.svg", garment: "tee", color: "#16161A", view: "detail" },
+  { file: "onix-1.svg", shoe: "court", color: "#16161A", view: "side", sole: "#D4CBBA" },
+  { file: "onix-2.svg", shoe: "court", color: "#16161A", view: "back", sole: "#D4CBBA" },
+  { file: "onix-3.svg", shoe: "court", color: "#16161A", view: "detail", sole: "#D4CBBA" },
 
-  { file: "hueso-1.svg", garment: "tee", color: "#E8E1D3", view: "front", backdrop: "#C2B9A8" },
-  { file: "hueso-2.svg", garment: "tee", color: "#E8E1D3", view: "back", backdrop: "#C2B9A8" },
-  { file: "hueso-3.svg", garment: "tee", color: "#E8E1D3", view: "detail", backdrop: "#C2B9A8" },
+  { file: "hueso-1.svg", shoe: "court", color: "#E8E1D3", view: "side", sole: "#E6DECD", backdrop: "#BEB4A2" },
+  { file: "hueso-2.svg", shoe: "court", color: "#E8E1D3", view: "back", sole: "#E6DECD", backdrop: "#BEB4A2" },
+  { file: "hueso-3.svg", shoe: "court", color: "#E8E1D3", view: "detail", sole: "#E6DECD", backdrop: "#BEB4A2" },
 
-  { file: "bruma-1.svg", garment: "hoodie", color: "#8C8880", view: "front" },
-  { file: "bruma-2.svg", garment: "hoodie", color: "#8C8880", view: "back" },
-  { file: "bruma-3.svg", garment: "hoodie", color: "#8C8880", view: "detail" },
+  { file: "bruma-1.svg", shoe: "runner", color: "#8C8880", view: "side", sole: "#D6CDBC" },
+  { file: "bruma-2.svg", shoe: "runner", color: "#8C8880", view: "back", sole: "#D6CDBC" },
+  { file: "bruma-3.svg", shoe: "runner", color: "#8C8880", view: "detail", sole: "#D6CDBC" },
 
-  { file: "brasa-1.svg", garment: "hoodie", color: "#B4441F", view: "front" },
-  { file: "brasa-2.svg", garment: "hoodie", color: "#B4441F", view: "back" },
-  { file: "brasa-3.svg", garment: "hoodie", color: "#B4441F", view: "detail" },
+  { file: "brasa-1.svg", shoe: "runner", color: "#B4441F", view: "side", sole: "#D2C9B8" },
+  { file: "brasa-2.svg", shoe: "runner", color: "#B4441F", view: "back", sole: "#D2C9B8" },
+  { file: "brasa-3.svg", shoe: "runner", color: "#B4441F", view: "detail", sole: "#D2C9B8" },
 
-  { file: "sombra-1.svg", garment: "pants", color: "#4A4E3D", view: "front" },
-  { file: "sombra-2.svg", garment: "pants", color: "#4A4E3D", view: "back" },
-  { file: "sombra-3.svg", garment: "pants", color: "#4A4E3D", view: "detail" },
+  { file: "sombra-1.svg", shoe: "skate", color: "#4A4E3D", view: "side", sole: "#D2C9B7" },
+  { file: "sombra-2.svg", shoe: "skate", color: "#4A4E3D", view: "back", sole: "#D2C9B7" },
+  { file: "sombra-3.svg", shoe: "skate", color: "#4A4E3D", view: "detail", sole: "#D2C9B7" },
 
-  { file: "duna-1.svg", garment: "pants", color: "#B9A88C", view: "front", backdrop: "#DCD3C2" },
-  { file: "duna-2.svg", garment: "pants", color: "#B9A88C", view: "back", backdrop: "#DCD3C2" },
+  { file: "duna-1.svg", shoe: "skate", color: "#B9A88C", view: "side", sole: "#EFE8DA", backdrop: "#CCC1AD" },
+  { file: "duna-2.svg", shoe: "skate", color: "#B9A88C", view: "back", sole: "#EFE8DA", backdrop: "#CCC1AD" },
 
-  { file: "taller-1.svg", garment: "jacket", color: "#232B33", view: "front" },
-  { file: "taller-2.svg", garment: "jacket", color: "#232B33", view: "back" },
-  { file: "taller-3.svg", garment: "jacket", color: "#232B33", view: "detail" },
+  { file: "taller-1.svg", shoe: "high", color: "#232B33", view: "side", sole: "#D5CCBB" },
+  { file: "taller-2.svg", shoe: "high", color: "#232B33", view: "back", sole: "#D5CCBB" },
+  { file: "taller-3.svg", shoe: "high", color: "#232B33", view: "detail", sole: "#D5CCBB" },
 
-  { file: "sello-1.svg", garment: "cap", color: "#16161A", view: "front" },
-  { file: "sello-2.svg", garment: "cap", color: "#16161A", view: "back" },
+  { file: "sello-1.svg", shoe: "laces", color: "#16161A", view: "side" },
+  { file: "sello-2.svg", shoe: "laces", color: "#16161A", view: "back" },
 ];
 
 await fs.mkdir(OUT_DIR, { recursive: true });

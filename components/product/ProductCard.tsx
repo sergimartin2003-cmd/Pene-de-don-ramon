@@ -23,7 +23,7 @@ export default function ProductCard({ product, priority, index }: Props) {
       className="group block focus-visible:outline-none"
       aria-label={`${product.name}, ${formatPrice(product.price)}`}
     >
-      <div className="relative aspect-4/5 overflow-hidden bg-sand transition-colors duration-500 group-focus-visible:ring-2 group-focus-visible:ring-ember group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-bone">
+      <div className="relative aspect-square overflow-hidden bg-sand transition-colors duration-500 group-focus-visible:ring-2 group-focus-visible:ring-ember group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-bone">
         {first && (
           <ProductImage
             src={first.url}

@@ -11,36 +11,45 @@ type Props = {
 
 /** Plantillas para no empezar de cero en los casos habituales. */
 const PRESETS: Record<string, SizeChart> = {
-  "Parte de arriba": {
+  "Tallas EU": {
     columns: [
-      { key: "chest", label: "Pecho", unit: "cm" },
-      { key: "length", label: "Largo", unit: "cm" },
-      { key: "sleeve", label: "Manga", unit: "cm" },
+      { key: "us", label: "US", unit: "" },
+      { key: "uk", label: "UK", unit: "" },
+      { key: "foot", label: "Pie", unit: "cm" },
     ],
-    rows: ["S", "M", "L", "XL"].map((size) => ({
+    rows: [
+      ["39", "6,5", "5,5", "24,5"],
+      ["40", "7", "6", "25,0"],
+      ["41", "8", "7", "25,5"],
+      ["42", "8,5", "7,5", "26,5"],
+      ["43", "9,5", "8,5", "27,5"],
+      ["44", "10", "9", "28,0"],
+      ["45", "11", "10", "29,0"],
+      ["46", "12", "11", "29,5"],
+    ].map(([size, us, uk, foot]) => ({
       size,
       available: true,
-      values: { chest: "", length: "", sleeve: "" },
+      values: { us, uk, foot },
     })),
-    note: "Medidas de la prenda en plano, con una tolerancia de ±1 cm.",
+    note: "Talla europea. Mide el pie de talón a dedo más largo, de pie y por la tarde.",
   },
-  Pantalón: {
-    columns: [
-      { key: "waist", label: "Cintura", unit: "cm" },
-      { key: "hip", label: "Cadera", unit: "cm" },
-      { key: "inseam", label: "Entrepierna", unit: "cm" },
-    ],
-    rows: ["S", "M", "L", "XL"].map((size) => ({
+  "Sólo EU": {
+    columns: [{ key: "foot", label: "Pie", unit: "cm" }],
+    rows: ["39", "40", "41", "42", "43", "44", "45"].map((size) => ({
       size,
       available: true,
-      values: { waist: "", hip: "", inseam: "" },
+      values: { foot: "" },
     })),
-    note: "Cintura medida en plano y multiplicada por dos. Tolerancia de ±1,5 cm.",
+    note: "Talla europea.",
   },
-  "Talla única": {
-    columns: [{ key: "medida", label: "Medida", unit: "cm" }],
-    rows: [{ size: "Única", available: true, values: { medida: "" } }],
-    note: "Talla única.",
+  "S / M / L": {
+    columns: [{ key: "range", label: "Tallas que cubre", unit: "" }],
+    rows: [
+      { size: "S", available: true, values: { range: "38 - 41" } },
+      { size: "M", available: true, values: { range: "42 - 44" } },
+      { size: "L", available: true, values: { range: "45 - 47" } },
+    ],
+    note: "",
   },
 };
 
@@ -101,7 +110,7 @@ export default function SizeChartEditor({ chart, onChange }: Props) {
   return (
     <Section
       title="Tallaje"
-      description="Cada producto tiene su propia tabla. Las medidas son de la prenda en plano y aparecen tal cual en la ficha."
+      description="Cada modelo tiene su propia tabla. Las tallas y sus equivalencias aparecen tal cual en la ficha."
       action={
         <div className="flex flex-wrap gap-1.5">
           {Object.keys(PRESETS).map((name) => (
@@ -245,7 +254,7 @@ export default function SizeChartEditor({ chart, onChange }: Props) {
           type="text"
           value={chart.note}
           onChange={(event) => onChange({ ...chart, note: event.target.value })}
-          placeholder="Medidas de la prenda en plano, con una tolerancia de ±1 cm."
+          placeholder="Talla europea. Mide el pie de talón a dedo más largo."
           className={`${inputClass} mt-2`}
         />
       </div>

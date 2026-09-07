@@ -1,81 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="pantalón">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="zapatilla de skate">
   <defs>
-    <radialGradient id="bg-pants-B9A88C-front" cx="50%" cy="36%" r="80%">
-      <stop offset="0%" stop-color="#eae1d0"/>
-      <stop offset="100%" stop-color="#c8bfae"/>
+    <radialGradient id="bg-skate-B9A88C-side" cx="50%" cy="38%" r="78%">
+      <stop offset="0%" stop-color="#dacfbb"/>
+      <stop offset="100%" stop-color="#b8ad99"/>
     </radialGradient>
-    <linearGradient id="cloth-pants-B9A88C-front" x1="16%" y1="0%" x2="88%" y2="100%">
+    <linearGradient id="upper-skate-B9A88C-side" x1="14%" y1="0%" x2="86%" y2="100%">
       <stop offset="0%" stop-color="#ab9a7e"/>
-      <stop offset="44%" stop-color="#B9A88C"/>
-      <stop offset="100%" stop-color="#89785c"/>
+      <stop offset="46%" stop-color="#B9A88C"/>
+      <stop offset="100%" stop-color="#87765a"/>
     </linearGradient>
-    <radialGradient id="fold-pants-B9A88C-front" cx="33%" cy="24%" r="72%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+    <linearGradient id="mid-skate-B9A88C-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ede6d8"/>
+      <stop offset="100%" stop-color="#cdc6b8"/>
+    </linearGradient>
+    <radialGradient id="fold-skate-B9A88C-side" cx="32%" cy="22%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
       <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
     </radialGradient>
-    <filter id="grain-pants-B9A88C-front">
+    <filter id="grain-skate-B9A88C-side">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="drop-pants-B9A88C-front" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    <filter id="drop-skate-B9A88C-side" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#3a3128" flood-opacity="0.10"/>
     </filter>
-    <filter id="weave-pants-B9A88C-front">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+    <filter id="weave-skate-B9A88C-side">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.72" numOctaves="2" seed="9" result="n"/>
       <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
     </filter>
-    <clipPath id="body-pants-B9A88C-front"><path d="M318,250 L682,250 C706,250 718,264 717,288
-      C721,392 710,486 700,578
-      L680,1084 C679,1102 668,1112 649,1112
-      L548,1112 C530,1112 519,1102 518,1084
-      L500,716 L482,1084 C481,1102 470,1112 452,1112
-      L351,1112 C332,1112 321,1102 320,1084
-      L300,578 C290,486 279,392 283,288
-      C282,264 294,250 318,250 Z"/></clipPath>
+    <clipPath id="body-skate-B9A88C-side"><path d="M186,756 C178,690 220,640 304,620
+      L520,570 C578,556 614,536 640,506
+      L658,472 C672,452 700,454 710,476
+      C726,514 746,538 778,554
+      C828,580 884,578 924,552
+      C952,534 984,548 988,582
+      L1000,700 C1004,730 986,750 954,752
+      L186,756 Z"/></clipPath>
   </defs>
 
-  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-pants-B9A88C-front)"/>
-  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+  <rect x="-400" y="-400" width="2000" height="2000" fill="url(#bg-skate-B9A88C-side)"/>
+  <ellipse cx="600" cy="890" rx="440" ry="26" fill="#3a3128" opacity="0.07"/>
 
-  <g filter="url(#drop-pants-B9A88C-front)" >
-    
+  <g filter="url(#drop-skate-B9A88C-side)" >
+    <path d="M150,834 C142,810 160,792 196,790 L1012,770
+      C1052,768 1074,786 1076,814 L1078,836
+      C1080,864 1058,880 1018,882 L208,892
+      C166,894 150,876 150,834 Z" fill="#a39c8e"/><path d="M150,834 C142,810 160,792 196,790 L1012,770
+      C1052,768 1074,786 1076,814 L1078,836
+      C1080,864 1058,880 1018,882 L208,892
+      C166,894 150,876 150,834 Z" fill="none" stroke="#817a6c" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M154,808 C148,772 174,748 218,746 L996,730
+      C1040,728 1064,754 1062,792 L1062,812 L154,828 Z" fill="url(#mid-skate-B9A88C-side)"/><path d="M154,808 C148,772 174,748 218,746 L996,730
+      C1040,728 1064,754 1062,792 L1062,812 L154,828 Z" fill="none" stroke="#9f988a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    <path d="M318,250 L682,250 C706,250 718,264 717,288
-      C721,392 710,486 700,578
-      L680,1084 C679,1102 668,1112 649,1112
-      L548,1112 C530,1112 519,1102 518,1084
-      L500,716 L482,1084 C481,1102 470,1112 452,1112
-      L351,1112 C332,1112 321,1102 320,1084
-      L300,578 C290,486 279,392 283,288
-      C282,264 294,250 318,250 Z" fill="url(#cloth-pants-B9A88C-front)"/>
-    <g clip-path="url(#body-pants-B9A88C-front)">
-      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-pants-B9A88C-front)"/>
-      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-pants-B9A88C-front)" opacity="0.6"/>
+    <path d="M186,756 C178,690 220,640 304,620
+      L520,570 C578,556 614,536 640,506
+      L658,472 C672,452 700,454 710,476
+      C726,514 746,538 778,554
+      C828,580 884,578 924,552
+      C952,534 984,548 988,582
+      L1000,700 C1004,730 986,750 954,752
+      L186,756 Z" fill="url(#upper-skate-B9A88C-side)"/>
+    <g clip-path="url(#body-skate-B9A88C-side)">
+      <rect x="0" y="0" width="1200" height="1200" fill="url(#fold-skate-B9A88C-side)"/>
+      <rect x="0" y="0" width="1200" height="1200" filter="url(#weave-skate-B9A88C-side)" opacity="0.6"/>
+      <path d="M186,756 C180,694 218,646 296,626 L388,604 L398,756 Z" fill="#87765a" fill-opacity="0.30"/><path d="M186,756 C180,694 218,646 296,626 L388,604 L398,756 Z" fill="none" stroke="#87765a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M898,564 C930,570 960,564 978,554 L996,712 L886,720 Z" fill="#87765a" fill-opacity="0.30"/><path d="M898,564 C930,570 960,564 978,554 L996,712 L886,720 Z" fill="none" stroke="#87765a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M436,716 C450,652 504,616 574,612 C622,610 650,640 644,684 L638,726 Z" fill="#87765a" fill-opacity="0.30"/><path d="M436,716 C450,652 504,616 574,612 C622,610 650,640 644,684 L638,726 Z" fill="none" stroke="#87765a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
     </g>
-    <path d="M318,250 L682,250 C706,250 718,264 717,288
-      C721,392 710,486 700,578
-      L680,1084 C679,1102 668,1112 649,1112
-      L548,1112 C530,1112 519,1102 518,1084
-      L500,716 L482,1084 C481,1102 470,1112 452,1112
-      L351,1112 C332,1112 321,1102 320,1084
-      L300,578 C290,486 279,392 283,288
-      C282,264 294,250 318,250 Z" fill="none" stroke="#89785c" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M186,756 C178,690 220,640 304,620
+      L520,570 C578,556 614,536 640,506
+      L658,472 C672,452 700,454 710,476
+      C726,514 746,538 778,554
+      C828,580 884,578 924,552
+      C952,534 984,548 988,582
+      L1000,700 C1004,730 986,750 954,752
+      L186,756 Z" fill="none" stroke="#87765a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    
-
-    
+    <path d="M712,490 C728,528 750,552 782,568 C832,594 888,592 928,566" fill="none" stroke="#756448" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/>
 
     <g fill="none" stroke="rgba(0,0,0,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
-      <path d="M284,336 L716,336"/>
-      <path d="M500,336 L500,716"/>
-      <path d="M340,394 C340,438 360,460 394,460"/>
-      <path d="M660,394 C660,438 640,460 606,460"/>
-      <path d="M320,1056 L482,1056"/>
-      <path d="M518,1056 L680,1056"/>
+      <path d="M398,756 L388,604"/>
+      <path d="M886,720 L898,564"/>
+      <path d="M154,828 L1062,796"/>
+      <path d="M154,790 L1062,758"/>
+      <path d="M542,566 C582,522 610,500 640,506"/>
+      <path d="M486,580 C526,536 556,512 588,518"/>
     </g>
+
+    <circle cx="512" cy="592" r="9" fill="#716044" fill-opacity="0.75"/><circle cx="512" cy="592" r="4" fill="#e5ded0"/>
+    <circle cx="552" cy="576" r="9" fill="#716044" fill-opacity="0.75"/><circle cx="552" cy="576" r="4" fill="#e5ded0"/>
+    <circle cx="590" cy="558" r="9" fill="#716044" fill-opacity="0.75"/><circle cx="590" cy="558" r="4" fill="#e5ded0"/>
+    <circle cx="620" cy="534" r="9" fill="#716044" fill-opacity="0.75"/><circle cx="620" cy="534" r="4" fill="#e5ded0"/>
+    <circle cx="646" cy="504" r="9" fill="#716044" fill-opacity="0.75"/><circle cx="646" cy="504" r="4" fill="#e5ded0"/>
   </g>
 
-  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-pants-B9A88C-front)" opacity="0.05" style="mix-blend-mode:multiply"/>
+  <rect x="-400" y="-400" width="2000" height="2000" filter="url(#grain-skate-B9A88C-side)" opacity="0.05" style="mix-blend-mode:multiply"/>
 </svg>

@@ -1,86 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="camiseta">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="zapatilla">
   <defs>
-    <radialGradient id="bg-tee-16161A-back" cx="50%" cy="36%" r="80%">
+    <radialGradient id="bg-court-16161A-back" cx="50%" cy="38%" r="78%">
       <stop offset="0%" stop-color="#fbf5e9"/>
       <stop offset="100%" stop-color="#d9d3c7"/>
     </radialGradient>
-    <linearGradient id="cloth-tee-16161A-back" x1="16%" y1="0%" x2="88%" y2="100%">
-      <stop offset="0%" stop-color="#3a3a3e"/>
-      <stop offset="44%" stop-color="#16161A"/>
+    <linearGradient id="upper-court-16161A-back" x1="14%" y1="0%" x2="86%" y2="100%">
+      <stop offset="0%" stop-color="#3c3c40"/>
+      <stop offset="46%" stop-color="#16161A"/>
       <stop offset="100%" stop-color="#000000"/>
     </linearGradient>
-    <radialGradient id="fold-tee-16161A-back" cx="33%" cy="24%" r="72%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+    <linearGradient id="mid-court-16161A-back" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d2c9b8"/>
+      <stop offset="100%" stop-color="#b2a998"/>
+    </linearGradient>
+    <radialGradient id="fold-court-16161A-back" cx="32%" cy="22%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
       <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
     </radialGradient>
-    <filter id="grain-tee-16161A-back">
+    <filter id="grain-court-16161A-back">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="drop-tee-16161A-back" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    <filter id="drop-court-16161A-back" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#3a3128" flood-opacity="0.10"/>
     </filter>
-    <filter id="weave-tee-16161A-back">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+    <filter id="weave-court-16161A-back">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.72" numOctaves="2" seed="9" result="n"/>
       <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
     </filter>
-    <clipPath id="body-tee-16161A-back"><path d="M418,292
-      C424,340 456,364 500,364 C544,364 576,340 582,292
-      L648,300 C666,303 682,311 696,324
-      L848,450 C860,460 862,476 852,489
-      L788,568 C777,582 758,583 746,571
-      L690,518 L690,994 C690,1016 677,1028 655,1028
-      L345,1028 C323,1028 310,1016 310,994
-      L310,518 L254,571 C242,583 223,582 212,568
-      L148,489 C138,476 140,460 152,450
-      L304,324 C318,311 334,303 352,300 Z"/></clipPath>
+    <clipPath id="body-court-16161A-back"><path d="M176,742 C168,664 214,606 302,584
+      L514,532 C572,518 610,496 636,462
+      L656,424 C670,402 700,404 710,428
+      C726,472 746,498 778,516
+      C830,546 888,544 930,514
+      C958,494 992,510 996,548
+      L1012,686 C1016,720 998,742 964,744
+      L176,744 Z"/></clipPath>
   </defs>
 
-  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-tee-16161A-back)"/>
-  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+  <rect x="-400" y="-400" width="2000" height="2000" fill="url(#bg-court-16161A-back)"/>
+  <ellipse cx="600" cy="890" rx="440" ry="26" fill="#3a3128" opacity="0.07"/>
 
-  <g filter="url(#drop-tee-16161A-back)" transform="translate(1000,0) scale(-1,1)">
-    
+  <g filter="url(#drop-court-16161A-back)" transform="translate(1200,0) scale(-1,1)">
+    <path d="M152,826 C146,802 164,786 198,784 L1008,760
+      C1046,758 1066,774 1068,800 L1070,822
+      C1072,850 1050,866 1012,868 L212,880
+      C172,882 152,864 152,826 Z" fill="#887f6e"/><path d="M152,826 C146,802 164,786 198,784 L1008,760
+      C1046,758 1066,774 1068,800 L1070,822
+      C1072,850 1050,866 1012,868 L212,880
+      C172,882 152,864 152,826 Z" fill="none" stroke="#665d4c" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M158,802 C150,762 176,734 222,732 L990,716
+      C1034,714 1058,742 1056,782 L1056,800 L158,822 Z" fill="url(#mid-court-16161A-back)"/><path d="M158,802 C150,762 176,734 222,732 L990,716
+      C1034,714 1058,742 1056,782 L1056,800 L158,822 Z" fill="none" stroke="#847b6a" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    <path d="M418,292
-      C424,340 456,364 500,364 C544,364 576,340 582,292
-      L648,300 C666,303 682,311 696,324
-      L848,450 C860,460 862,476 852,489
-      L788,568 C777,582 758,583 746,571
-      L690,518 L690,994 C690,1016 677,1028 655,1028
-      L345,1028 C323,1028 310,1016 310,994
-      L310,518 L254,571 C242,583 223,582 212,568
-      L148,489 C138,476 140,460 152,450
-      L304,324 C318,311 334,303 352,300 Z" fill="url(#cloth-tee-16161A-back)"/>
-    <g clip-path="url(#body-tee-16161A-back)">
-      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-tee-16161A-back)"/>
-      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-tee-16161A-back)" opacity="0.6"/>
+    <path d="M176,742 C168,664 214,606 302,584
+      L514,532 C572,518 610,496 636,462
+      L656,424 C670,402 700,404 710,428
+      C726,472 746,498 778,516
+      C830,546 888,544 930,514
+      C958,494 992,510 996,548
+      L1012,686 C1016,720 998,742 964,744
+      L176,744 Z" fill="url(#upper-court-16161A-back)"/>
+    <g clip-path="url(#body-court-16161A-back)">
+      <rect x="0" y="0" width="1200" height="1200" fill="url(#fold-court-16161A-back)"/>
+      <rect x="0" y="0" width="1200" height="1200" filter="url(#weave-court-16161A-back)" opacity="0.6"/>
+      <path d="M176,742 C170,672 210,616 292,594 L392,568 L404,742 Z" fill="#000000" fill-opacity="0.30"/><path d="M176,742 C170,672 210,616 292,594 L392,568 L404,742 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M902,528 C934,536 966,530 984,518 L1008,700 L890,712 Z" fill="#000000" fill-opacity="0.30"/><path d="M902,528 C934,536 966,530 984,518 L1008,700 L890,712 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M448,700 C462,632 516,594 588,590 C638,588 668,620 662,666 L656,712 Z" fill="#000000" fill-opacity="0.30"/><path d="M448,700 C462,632 516,594 588,590 C638,588 668,620 662,666 L656,712 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
     </g>
-    <path d="M418,292
-      C424,340 456,364 500,364 C544,364 576,340 582,292
-      L648,300 C666,303 682,311 696,324
-      L848,450 C860,460 862,476 852,489
-      L788,568 C777,582 758,583 746,571
-      L690,518 L690,994 C690,1016 677,1028 655,1028
-      L345,1028 C323,1028 310,1016 310,994
-      L310,518 L254,571 C242,583 223,582 212,568
-      L148,489 C138,476 140,460 152,450
-      L304,324 C318,311 334,303 352,300 Z" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M176,742 C168,664 214,606 302,584
+      L514,532 C572,518 610,496 636,462
+      L656,424 C670,402 700,404 710,428
+      C726,472 746,498 778,516
+      C830,546 888,544 930,514
+      C958,494 992,510 996,548
+      L1012,686 C1016,720 998,742 964,744
+      L176,744 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    
+    <path d="M712,442 C730,486 752,514 784,532 C834,560 890,558 932,528" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/>
 
-    
-
-    <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
-      <path d="M690,518 L690,994"/>
-      <path d="M310,518 L310,994"/>
-      <path d="M410,300 C418,344 452,376 500,376 C548,376 582,344 590,300"/>
-      <path d="M746,571 L690,518"/>
-      <path d="M254,571 L310,518"/>
+    <g fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M404,742 L392,568"/>
+      <path d="M890,712 L902,528"/>
+      <path d="M158,822 L1056,782"/>
+      <path d="M540,528 C580,482 606,458 636,462"/>
+      <path d="M482,542 C522,496 552,470 584,476"/>
+      <path d="M424,556 C464,510 496,486 528,492"/>
     </g>
+
+    <circle cx="505" cy="556" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="505" cy="556" r="4" fill="#cac1b0"/>
+    <circle cx="548" cy="538" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="548" cy="538" r="4" fill="#cac1b0"/>
+    <circle cx="586" cy="518" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="586" cy="518" r="4" fill="#cac1b0"/>
+    <circle cx="618" cy="494" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="618" cy="494" r="4" fill="#cac1b0"/>
+    <circle cx="646" cy="466" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="646" cy="466" r="4" fill="#cac1b0"/>
   </g>
 
-  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-tee-16161A-back)" opacity="0.05" style="mix-blend-mode:multiply"/>
+  <rect x="-400" y="-400" width="2000" height="2000" filter="url(#grain-court-16161A-back)" opacity="0.05" style="mix-blend-mode:multiply"/>
 </svg>

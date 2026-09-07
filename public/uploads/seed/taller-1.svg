@@ -1,94 +1,99 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="chaqueta">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="bota de baloncesto">
   <defs>
-    <radialGradient id="bg-jacket-232B33-front" cx="50%" cy="36%" r="80%">
+    <radialGradient id="bg-high-232B33-side" cx="50%" cy="38%" r="78%">
       <stop offset="0%" stop-color="#fbf5e9"/>
       <stop offset="100%" stop-color="#d9d3c7"/>
     </radialGradient>
-    <linearGradient id="cloth-jacket-232B33-front" x1="16%" y1="0%" x2="88%" y2="100%">
-      <stop offset="0%" stop-color="#474f57"/>
-      <stop offset="44%" stop-color="#232B33"/>
-      <stop offset="100%" stop-color="#070f17"/>
+    <linearGradient id="upper-high-232B33-side" x1="14%" y1="0%" x2="86%" y2="100%">
+      <stop offset="0%" stop-color="#495159"/>
+      <stop offset="46%" stop-color="#232B33"/>
+      <stop offset="100%" stop-color="#050d15"/>
     </linearGradient>
-    <radialGradient id="fold-jacket-232B33-front" cx="33%" cy="24%" r="72%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+    <linearGradient id="mid-high-232B33-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d3cab9"/>
+      <stop offset="100%" stop-color="#b3aa99"/>
+    </linearGradient>
+    <radialGradient id="fold-high-232B33-side" cx="32%" cy="22%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
       <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
     </radialGradient>
-    <filter id="grain-jacket-232B33-front">
+    <filter id="grain-high-232B33-side">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="drop-jacket-232B33-front" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    <filter id="drop-high-232B33-side" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#3a3128" flood-opacity="0.10"/>
     </filter>
-    <filter id="weave-jacket-232B33-front">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+    <filter id="weave-high-232B33-side">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.72" numOctaves="2" seed="9" result="n"/>
       <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
     </filter>
-    <clipPath id="body-jacket-232B33-front"><path d="M400,278 L468,320 L500,300 L532,320 L600,278
-      L670,292 C690,296 708,305 723,319
-      L884,502 C898,516 900,538 890,554
-      L826,682 C816,700 796,708 778,700
-      L746,686 C730,678 724,660 728,642
-      L710,531 L710,1030 C710,1054 696,1066 672,1066
-      L328,1066 C304,1066 290,1054 290,1030
-      L290,531 L272,642 C276,660 270,678 254,686
-      L222,700 C204,708 184,700 174,682
-      L110,554 C100,538 102,516 116,502
-      L277,319 C292,305 310,296 330,292 Z"/></clipPath>
+    <clipPath id="body-high-232B33-side"><path d="M176,746 C168,668 214,610 302,588
+      L512,536 C572,522 612,498 640,462
+      L662,332 C668,300 696,282 730,288
+      C790,298 852,300 912,290
+      C952,284 984,306 986,344
+      L1012,690 C1016,722 998,744 964,746
+      L176,748 Z"/></clipPath>
   </defs>
 
-  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-jacket-232B33-front)"/>
-  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+  <rect x="-400" y="-400" width="2000" height="2000" fill="url(#bg-high-232B33-side)"/>
+  <ellipse cx="600" cy="890" rx="440" ry="26" fill="#3a3128" opacity="0.07"/>
 
-  <g filter="url(#drop-jacket-232B33-front)" >
-    
+  <g filter="url(#drop-high-232B33-side)" >
+    <path d="M152,830 C146,806 164,790 198,788 L1008,764
+      C1046,762 1066,778 1068,804 L1070,826
+      C1072,854 1050,870 1012,872 L212,884
+      C172,886 152,868 152,830 Z" fill="#89806f"/><path d="M152,830 C146,806 164,790 198,788 L1008,764
+      C1046,762 1066,778 1068,804 L1070,826
+      C1072,854 1050,870 1012,872 L212,884
+      C172,886 152,868 152,830 Z" fill="none" stroke="#675e4d" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M158,806 C150,766 176,738 222,736 L990,720
+      C1034,718 1058,746 1056,786 L1056,804 L158,826 Z" fill="url(#mid-high-232B33-side)"/><path d="M158,806 C150,766 176,738 222,736 L990,720
+      C1034,718 1058,746 1056,786 L1056,804 L158,826 Z" fill="none" stroke="#857c6b" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    <path d="M400,278 L468,320 L500,300 L532,320 L600,278
-      L670,292 C690,296 708,305 723,319
-      L884,502 C898,516 900,538 890,554
-      L826,682 C816,700 796,708 778,700
-      L746,686 C730,678 724,660 728,642
-      L710,531 L710,1030 C710,1054 696,1066 672,1066
-      L328,1066 C304,1066 290,1054 290,1030
-      L290,531 L272,642 C276,660 270,678 254,686
-      L222,700 C204,708 184,700 174,682
-      L110,554 C100,538 102,516 116,502
-      L277,319 C292,305 310,296 330,292 Z" fill="url(#cloth-jacket-232B33-front)"/>
-    <g clip-path="url(#body-jacket-232B33-front)">
-      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-jacket-232B33-front)"/>
-      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-jacket-232B33-front)" opacity="0.6"/>
+    <path d="M176,746 C168,668 214,610 302,588
+      L512,536 C572,522 612,498 640,462
+      L662,332 C668,300 696,282 730,288
+      C790,298 852,300 912,290
+      C952,284 984,306 986,344
+      L1012,690 C1016,722 998,744 964,746
+      L176,748 Z" fill="url(#upper-high-232B33-side)"/>
+    <g clip-path="url(#body-high-232B33-side)">
+      <rect x="0" y="0" width="1200" height="1200" fill="url(#fold-high-232B33-side)"/>
+      <rect x="0" y="0" width="1200" height="1200" filter="url(#weave-high-232B33-side)" opacity="0.6"/>
+      <path d="M176,746 C170,676 210,620 292,598 L392,572 L404,746 Z" fill="#050d15" fill-opacity="0.30"/><path d="M176,746 C170,676 210,620 292,598 L392,572 L404,746 Z" fill="none" stroke="#050d15" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M668,368 L982,344 L994,462 L676,486 Z" fill="#050d15" fill-opacity="0.30"/><path d="M668,368 L982,344 L994,462 L676,486 Z" fill="none" stroke="#050d15" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M448,704 C462,636 516,598 588,594 C638,592 668,624 662,670 L656,716 Z" fill="#050d15" fill-opacity="0.30"/><path d="M448,704 C462,636 516,598 588,594 C638,592 668,624 662,670 L656,716 Z" fill="none" stroke="#050d15" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
     </g>
-    <path d="M400,278 L468,320 L500,300 L532,320 L600,278
-      L670,292 C690,296 708,305 723,319
-      L884,502 C898,516 900,538 890,554
-      L826,682 C816,700 796,708 778,700
-      L746,686 C730,678 724,660 728,642
-      L710,531 L710,1030 C710,1054 696,1066 672,1066
-      L328,1066 C304,1066 290,1054 290,1030
-      L290,531 L272,642 C276,660 270,678 254,686
-      L222,700 C204,708 184,700 174,682
-      L110,554 C100,538 102,516 116,502
-      L277,319 C292,305 310,296 330,292 Z" fill="none" stroke="#070f17" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M176,746 C168,668 214,610 302,588
+      L512,536 C572,522 612,498 640,462
+      L662,332 C668,300 696,282 730,288
+      C790,298 852,300 912,290
+      C952,284 984,306 986,344
+      L1012,690 C1016,722 998,744 964,746
+      L176,748 Z" fill="none" stroke="#050d15" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
-    
+    <path d="M666,346 C700,320 760,314 830,316 C888,318 946,326 982,346" fill="none" stroke="#000003" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/>
 
-    
-
-    <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
-      <path d="M500,300 L500,1066"/>
-      <path d="M710,531 L710,1030"/>
-      <path d="M290,531 L290,1030"/>
-      <path d="M400,278 L468,320"/>
-      <path d="M600,278 L532,320"/>
-      <path d="M348,742 L456,742"/>
-      <path d="M544,742 L652,742"/>
-      <path d="M778,700 L826,682"/>
-      <path d="M222,700 L174,682"/>
-      <path d="M290,1004 L710,1004"/>
+    <g fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M404,746 L392,572"/>
+      <path d="M158,826 L1056,786"/>
+      <path d="M668,368 L982,344"/>
+      <path d="M676,486 L994,462"/>
+      <path d="M540,532 C580,486 610,460 640,462"/>
+      <path d="M482,546 C522,500 552,474 584,480"/>
+      <path d="M724,300 L740,494"/>
     </g>
+
+    <circle cx="506" cy="558" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="506" cy="558" r="4" fill="#cbc2b1"/>
+    <circle cx="548" cy="540" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="548" cy="540" r="4" fill="#cbc2b1"/>
+    <circle cx="586" cy="518" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="586" cy="518" r="4" fill="#cbc2b1"/>
+    <circle cx="618" cy="492" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="618" cy="492" r="4" fill="#cbc2b1"/>
+    <circle cx="644" cy="462" r="9" fill="#000000" fill-opacity="0.75"/><circle cx="644" cy="462" r="4" fill="#cbc2b1"/>
   </g>
 
-  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-jacket-232B33-front)" opacity="0.05" style="mix-blend-mode:multiply"/>
+  <rect x="-400" y="-400" width="2000" height="2000" filter="url(#grain-high-232B33-side)" opacity="0.05" style="mix-blend-mode:multiply"/>
 </svg>

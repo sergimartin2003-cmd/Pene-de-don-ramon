@@ -1,64 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="gorra">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="plantillas">
   <defs>
-    <radialGradient id="bg-cap-16161A-front" cx="50%" cy="36%" r="80%">
+    <radialGradient id="bg-laces-16161A-side" cx="50%" cy="38%" r="78%">
       <stop offset="0%" stop-color="#fbf5e9"/>
       <stop offset="100%" stop-color="#d9d3c7"/>
     </radialGradient>
-    <linearGradient id="cloth-cap-16161A-front" x1="16%" y1="0%" x2="88%" y2="100%">
-      <stop offset="0%" stop-color="#3a3a3e"/>
-      <stop offset="44%" stop-color="#16161A"/>
+    <linearGradient id="upper-laces-16161A-side" x1="14%" y1="0%" x2="86%" y2="100%">
+      <stop offset="0%" stop-color="#3c3c40"/>
+      <stop offset="46%" stop-color="#16161A"/>
       <stop offset="100%" stop-color="#000000"/>
     </linearGradient>
-    <radialGradient id="fold-cap-16161A-front" cx="33%" cy="24%" r="72%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+    <linearGradient id="mid-laces-16161A-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#efeae0"/>
+      <stop offset="100%" stop-color="#cfcac0"/>
+    </linearGradient>
+    <radialGradient id="fold-laces-16161A-side" cx="32%" cy="22%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
       <stop offset="58%" stop-color="#ffffff" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
     </radialGradient>
-    <filter id="grain-cap-16161A-front">
+    <filter id="grain-laces-16161A-side">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="drop-cap-16161A-front" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#3a3128" flood-opacity="0.10"/>
+    <filter id="drop-laces-16161A-side" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#3a3128" flood-opacity="0.10"/>
     </filter>
-    <filter id="weave-cap-16161A-front">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5 0.72" numOctaves="2" seed="9" result="n"/>
+    <filter id="weave-laces-16161A-side">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.72" numOctaves="2" seed="9" result="n"/>
       <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
     </filter>
-    <clipPath id="body-cap-16161A-front"><path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
-      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z"/></clipPath>
+    <clipPath id="body-laces-16161A-side"><path d="M440,268 C500,268 540,308 546,378 L554,540
+      C558,624 540,708 516,790 C500,846 480,880 440,880
+      C400,880 380,846 364,790 C340,708 322,624 326,540
+      L334,378 C340,308 380,268 440,268 Z
+      M760,268 C820,268 860,308 866,378 L874,540
+      C878,624 860,708 836,790 C820,846 800,880 760,880
+      C720,880 700,846 684,790 C660,708 642,624 646,540
+      L654,378 C660,308 700,268 760,268 Z"/></clipPath>
   </defs>
 
-  <rect x="-400" y="-400" width="1800" height="2050" fill="url(#bg-cap-16161A-front)"/>
-  <ellipse cx="500" cy="1120" rx="248" ry="30" fill="#3a3128" opacity="0.07"/>
+  <rect x="-400" y="-400" width="2000" height="2000" fill="url(#bg-laces-16161A-side)"/>
+  <ellipse cx="600" cy="890" rx="440" ry="26" fill="#3a3128" opacity="0.07"/>
 
-  <g filter="url(#drop-cap-16161A-front)" >
+  <g filter="url(#drop-laces-16161A-side)" >
+    
     
 
-    <path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
-      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z" fill="url(#cloth-cap-16161A-front)"/>
-    <g clip-path="url(#body-cap-16161A-front)">
-      <rect x="0" y="0" width="1000" height="1250" fill="url(#fold-cap-16161A-front)"/>
-      <rect x="0" y="0" width="1000" height="1250" filter="url(#weave-cap-16161A-front)" opacity="0.6"/>
+    <path d="M440,268 C500,268 540,308 546,378 L554,540
+      C558,624 540,708 516,790 C500,846 480,880 440,880
+      C400,880 380,846 364,790 C340,708 322,624 326,540
+      L334,378 C340,308 380,268 440,268 Z
+      M760,268 C820,268 860,308 866,378 L874,540
+      C878,624 860,708 836,790 C820,846 800,880 760,880
+      C720,880 700,846 684,790 C660,708 642,624 646,540
+      L654,378 C660,308 700,268 760,268 Z" fill="url(#upper-laces-16161A-side)"/>
+    <g clip-path="url(#body-laces-16161A-side)">
+      <rect x="0" y="0" width="1200" height="1200" fill="url(#fold-laces-16161A-side)"/>
+      <rect x="0" y="0" width="1200" height="1200" filter="url(#weave-laces-16161A-side)" opacity="0.6"/>
+      <path d="M440,300 C488,300 518,334 522,392 L528,520 L352,520 L358,392
+       C362,334 392,300 440,300 Z" fill="#000000" fill-opacity="0.30"/><path d="M440,300 C488,300 518,334 522,392 L528,520 L352,520 L358,392
+       C362,334 392,300 440,300 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M760,300 C808,300 838,334 842,392 L848,520 L672,520 L678,392
+       C682,334 712,300 760,300 Z" fill="#000000" fill-opacity="0.30"/><path d="M760,300 C808,300 838,334 842,392 L848,520 L672,520 L678,392
+       C682,334 712,300 760,300 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
     </g>
-    <path d="M500,388 C368,388 268,486 262,624 C260,652 274,668 306,668
-      L694,668 C726,668 740,652 738,624 C732,486 632,388 500,388 Z" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
-
-    <path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
-       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="url(#cloth-cap-16161A-front)"/><path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
-       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="#000000" fill-opacity="0.28"/><path d="M266,652 C196,668 150,712 148,760 C147,786 165,800 196,800
-       L804,800 C835,800 853,786 852,760 C850,712 804,668 734,652 Z" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M440,268 C500,268 540,308 546,378 L554,540
+      C558,624 540,708 516,790 C500,846 480,880 440,880
+      C400,880 380,846 364,790 C340,708 322,624 326,540
+      L334,378 C340,308 380,268 440,268 Z
+      M760,268 C820,268 860,308 866,378 L874,540
+      C878,624 860,708 836,790 C820,846 800,880 760,880
+      C720,880 700,846 684,790 C660,708 642,624 646,540
+      L654,378 C660,308 700,268 760,268 Z" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="2.6" stroke-linejoin="round"/>
 
     
 
-    <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
-      <path d="M500,392 L500,668"/>
-      <path d="M500,394 C418,436 372,528 366,668"/>
-      <path d="M500,394 C582,436 628,528 634,668"/>
-      <path d="M262,660 L738,660"/>
+    <g fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="2.4" stroke-dasharray="8 7" stroke-linecap="round">
+      <path d="M440,300 L440,860"/>
+      <path d="M760,300 L760,860"/>
+      <path d="M352,540 L530,540"/>
+      <path d="M672,540 L850,540"/>
     </g>
+
+    
   </g>
 
-  <rect x="-400" y="-400" width="1800" height="2050" filter="url(#grain-cap-16161A-front)" opacity="0.05" style="mix-blend-mode:multiply"/>
+  <rect x="-400" y="-400" width="2000" height="2000" filter="url(#grain-laces-16161A-side)" opacity="0.05" style="mix-blend-mode:multiply"/>
 </svg>

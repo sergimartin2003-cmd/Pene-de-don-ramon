@@ -8,9 +8,9 @@ import { site } from "@/lib/site";
 import { CATEGORY_LABELS, CATEGORIES } from "@/lib/types";
 
 const NAV = [
-  { href: "/tienda", label: "Tienda" },
-  { href: "/estudio", label: "Estudio" },
-  { href: "/tienda#tallas", label: "Tallas" },
+  { href: "/tienda", label: "Catálogo" },
+  { href: "/estudio", label: "Nosotros" },
+  { href: "/tienda#tallas", label: "Tu número" },
 ];
 
 export default function Header() {
@@ -82,7 +82,7 @@ export default function Header() {
               href="/tienda"
               className="label bg-ink px-5 py-3 text-bone transition-colors duration-300 hover:bg-ember"
             >
-              Ver colección
+              Ver catálogo
             </Link>
           </nav>
 

@@ -9,16 +9,16 @@ import type { Product } from "@/lib/types";
 const Product3DViewer = dynamic(() => import("@/components/three/Product3DViewer"), {
   ssr: false,
   loading: () => (
-    <div className="grid aspect-square place-items-center bg-sand/60 md:aspect-4/5">
+    <div className="grid aspect-square place-items-center bg-sand/60 md:aspect-square">
       <span className="block h-7 w-7 animate-spin rounded-full border-2 border-ink/15 border-t-ember" />
     </div>
   ),
 });
 
 const NOTES = [
-  ["Silueta", "Se recorta de la propia foto, sin plantillas."],
-  ["Volumen", "El grosor lo ajustamos pieza a pieza en el panel."],
-  ["Tejido", "Relieve de trama para que no parezca cartón."],
+  ["Perfil", "Se recorta de la propia foto, sin plantillas."],
+  ["Volumen", "El grosor lo ajustamos modelo a modelo en el panel."],
+  ["Material", "Relieve de trama para que no parezca cartón."],
 ];
 
 export default function HomeThreeShowcase({ product }: { product: Product }) {
@@ -32,7 +32,7 @@ export default function HomeThreeShowcase({ product }: { product: Product }) {
           sourceIndex={product.model3d.sourceImageIndex}
           source={product.model3d.source}
           glbUrl={product.model3d.glbUrl}
-          className="aspect-square w-full md:aspect-4/5"
+          className="aspect-square w-full md:aspect-square"
         />
       </div>
 

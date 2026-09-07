@@ -26,7 +26,7 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
   return (
     <Section
       title="Modelo 3D"
-      description="A partir de la foto se recorta la silueta de la prenda y se le da volumen. Se ve el resultado aquí mismo, en directo."
+      description="A partir de la foto se recorta la silueta de la zapatilla y se le da volumen. Se ve el resultado aquí mismo, en directo."
     >
       <Toggle
         checked={config.enabled}
@@ -61,14 +61,14 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
               <Field
                 label="URL del archivo .glb"
                 htmlFor="glb-url"
-                hint="Para cuando tengas un escaneo real de la prenda. Si lo dejas vacío se usan las fotos."
+                hint="Para cuando tengas un escaneo real del modelo. Si lo dejas vacío se usan las fotos."
               >
                 <input
                   id="glb-url"
                   type="url"
                   value={config.glbUrl ?? ""}
                   onChange={(event) => patch({ glbUrl: event.target.value || null })}
-                  placeholder="https://…/prenda.glb"
+                  placeholder="https://…/zapatilla.glb"
                   className={inputClass}
                 />
               </Field>
@@ -77,7 +77,7 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
                 <Field
                   label="Foto de partida"
                   htmlFor="foto-3d"
-                  hint="Funciona mejor con una foto frontal y fondo liso."
+                  hint="Funciona mejor con una foto de perfil y fondo liso que contraste también con la suela."
                 >
                   <select
                     id="foto-3d"
@@ -99,7 +99,7 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
                 </Field>
 
                 <Field
-                  label={`Grosor de la prenda · ${config.depth.toFixed(2)}`}
+                  label={`Grosor del modelo · ${config.depth.toFixed(2)}`}
                   htmlFor="grosor-3d"
                   hint="Bajo para una camiseta, alto para una chaqueta o una gorra."
                 >
@@ -107,7 +107,7 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
                     id="grosor-3d"
                     type="range"
                     min={0.02}
-                    max={0.4}
+                    max={0.6}
                     step={0.01}
                     value={config.depth}
                     onChange={(event) => patch({ depth: Number(event.target.value) })}
@@ -118,7 +118,7 @@ export default function Model3DPanel({ config, images, onChange }: Props) {
                 <Field
                   label={`Recorte del fondo · ${config.backgroundTolerance}`}
                   htmlFor="recorte-3d"
-                  hint="Súbelo si se cuela fondo en el modelo; bájalo si desaparecen partes de la prenda."
+                  hint="Súbelo si se cuela fondo en el modelo; bájalo si desaparecen partes de la zapatilla (ojo con las suelas claras)."
                 >
                   <input
                     id="recorte-3d"

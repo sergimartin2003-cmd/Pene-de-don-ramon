@@ -87,7 +87,7 @@ export default function ImageUploader({ images, onChange }: Props) {
         </p>
         <p className="mt-2 text-xs text-stone">
           JPG, PNG, WebP, AVIF o SVG. Hasta 12 MB por foto. La primera es la que se
-          ve en la parrilla.
+          ve en la parrilla y la que usa el 3D.
         </p>
         <input
           id={inputId}

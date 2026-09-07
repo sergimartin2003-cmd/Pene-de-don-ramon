@@ -3,19 +3,19 @@ import * as THREE from "three";
 import type { Point } from "./silhouette";
 
 /**
- * Convierte el contorno de una prenda en un cuerpo 3D con volumen.
+ * Convierte el contorno de una zapatilla en un cuerpo 3D con volumen.
  *
  * La foto se proyecta sobre la cara frontal y, si hay una segunda foto, sobre
- * la trasera; el canto se resuelve con el color medio de la prenda y un mapa
- * de normales de tejido. Se separan los triángulos por la dirección de su
+ * la trasera; el canto se resuelve con el color medio del modelo y un mapa
+ * de normales de material. Se separan los triángulos por la dirección de su
  * normal para poder darle un material distinto a cada cara.
  */
 
-export type GarmentGeometry = {
+export type ShoeGeometry = {
   geometry: THREE.ExtrudeGeometry;
   /** Semiancho y semialto del encuadre de la foto en coordenadas del modelo. */
   frame: { halfW: number; halfH: number };
-  /** Escala que lleva la prenda a ocupar una unidad, sea cual sea el encuadre. */
+  /** Escala que lleva el modelo a ocupar una unidad, sea cual sea el encuadre. */
   fit: number;
 };
 
@@ -30,11 +30,11 @@ export function frameFor(aspect: number) {
   };
 }
 
-export function buildGarmentGeometry(
+export function buildShoeGeometry(
   contour: Point[],
   aspect: number,
   depth: number,
-): GarmentGeometry {
+): ShoeGeometry {
   const frame = frameFor(aspect);
   const shape = new THREE.Shape(contour.map(([x, y]) => new THREE.Vector2(x, y)));
 
@@ -50,7 +50,7 @@ export function buildGarmentGeometry(
       });
     },
     generateSideWallUV(_geometry, vertices, indexA, indexB, indexC, indexD) {
-      // El canto sólo necesita una UV coherente para el mapa de tejido.
+      // El canto sólo necesita una UV coherente para el mapa de material.
       return [indexA, indexB, indexC, indexD].map((index) => {
         const x = vertices[index * 3];
         const y = vertices[index * 3 + 1];
@@ -70,7 +70,7 @@ export function buildGarmentGeometry(
     bevelThickness: depth * 0.42,
     bevelSize,
     // El bisel se mete hacia dentro: si sobresaliera del contorno, sus vértices
-    // leerían la textura fuera de la prenda y dibujarían un halo de fondo.
+    // leerían la textura fuera de la zapatilla y dibujarían un halo de fondo.
     bevelOffset: -bevelSize,
     bevelSegments: 4,
     UVGenerator: uvGenerator,
@@ -135,8 +135,8 @@ function assignFaceMaterials(geometry: THREE.ExtrudeGeometry): void {
   }
 }
 
-/** Mapa de normales de tejido generado en un canvas: no descarga nada. */
-export function createFabricNormalMap(size = 256): THREE.CanvasTexture | null {
+/** Mapa de normales de material generado en un canvas: no descarga nada. */
+export function createMaterialNormalMap(size = 256): THREE.CanvasTexture | null {
   if (typeof document === "undefined") return null;
 
   const canvas = document.createElement("canvas");
@@ -175,7 +175,7 @@ export function createFabricNormalMap(size = 256): THREE.CanvasTexture | null {
   return texture;
 }
 
-export const GARMENT_MATERIAL_ORDER = {
+export const SHOE_MATERIAL_ORDER = {
   front: MATERIAL_FRONT,
   back: MATERIAL_BACK,
   side: MATERIAL_SIDE,
