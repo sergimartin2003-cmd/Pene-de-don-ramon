@@ -12,11 +12,13 @@ import { CATEGORY_LABELS, type Product } from "@/lib/types";
 type Props = {
   initialProducts: Product[];
   aiConfigured: boolean;
+  /** false cuando el alojamiento no tiene disco y los cambios no sobreviven. */
+  persistent: boolean;
 };
 
 type View = { mode: "list" } | { mode: "edit"; product: Product | null };
 
-export default function AdminDashboard({ initialProducts, aiConfigured }: Props) {
+export default function AdminDashboard({ initialProducts, aiConfigured, persistent }: Props) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [view, setView] = useState<View>({ mode: "list" });
@@ -119,6 +121,13 @@ export default function AdminDashboard({ initialProducts, aiConfigured }: Props)
       </header>
 
       <div className="shell py-10 md:py-14">
+        {!persistent && (
+          <p className="mb-8 border border-ember/40 bg-ember/8 px-4 py-3 text-sm text-ember-dark">
+            <strong className="font-medium">Modo demostración.</strong> Este
+            alojamiento no tiene disco donde guardar, así que puedes probarlo todo
+            pero los cambios se perderán al reiniciar el servidor.
+          </p>
+        )}
         {flash && (
           <p className="mb-8 flex items-center justify-between gap-4 border border-ink/15 bg-sand/50 px-4 py-3 text-sm">
             {flash}

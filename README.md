@@ -134,12 +134,16 @@ un VPS, Railway, Render, Fly, Docker…
 npm run build && npm start
 ```
 
-En plataformas *serverless* con disco efímero (por ejemplo Vercel) los productos
-que crees se perderían al reiniciar. Para desplegar ahí hay que sustituir el
-almacén por una base de datos: todo el acceso a disco está aislado en las
-funciones `readAll` y `writeAll` de `lib/store.ts`, y las fotos se subirían a un
-almacenamiento de objetos desde `app/api/upload/route.ts`. El resto del proyecto
-no se entera.
+En plataformas *serverless* con disco de sólo lectura (por ejemplo Vercel) la
+tienda **no se rompe**: detecta que no puede escribir, sigue funcionando en
+memoria y el panel muestra un aviso de «modo demostración». Las fotos que subas
+se incrustan en el producto como data URI (máximo 1,5 MB cada una). Todo se ve y
+se puede probar, pero los cambios se pierden al reiniciar el servidor.
+
+Para que ahí sea una tienda de verdad hay que sustituir el almacén por una base
+de datos: todo el acceso a disco está aislado en las funciones `readAll` y
+`writeAll` de `lib/store.ts`, y las fotos se subirían a un almacenamiento de
+objetos desde `app/api/upload/route.ts`. El resto del proyecto no se entera.
 
 ---
 

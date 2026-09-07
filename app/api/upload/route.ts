@@ -11,6 +11,15 @@ const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const MAX_BYTES = 12 * 1024 * 1024; // 12 MB por foto
 const MAX_FILES = 12;
 
+/**
+ * Si el alojamiento tiene el disco en sólo lectura (Vercel y similares) la foto
+ * no se puede guardar como fichero, así que se incrusta en el propio producto
+ * como data URI. Ahí el límite es mucho más bajo: va dentro del JSON.
+ */
+const MAX_INLINE_BYTES = 1.5 * 1024 * 1024;
+
+let diskWritable = true;
+
 /** Extensión por tipo, para no confiar en el nombre que manda el navegador. */
 const EXTENSIONS: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -42,7 +51,14 @@ export async function POST(request: Request) {
     );
   }
 
-  await fs.mkdir(UPLOAD_DIR, { recursive: true });
+  if (diskWritable) {
+    try {
+      await fs.mkdir(UPLOAD_DIR, { recursive: true });
+    } catch {
+      diskWritable = false;
+    }
+  }
+
   const uploaded: { id: string; url: string; alt: string }[] = [];
 
   for (const file of files) {
@@ -61,11 +77,37 @@ export async function POST(request: Request) {
     }
 
     const id = randomUUID();
-    const filename = `${id}${extension}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(path.join(UPLOAD_DIR, filename), buffer);
-    uploaded.push({ id, url: `/uploads/${filename}`, alt: "" });
+
+    if (diskWritable) {
+      try {
+        const filename = `${id}${extension}`;
+        await fs.writeFile(path.join(UPLOAD_DIR, filename), buffer);
+        uploaded.push({ id, url: `/uploads/${filename}`, alt: "" });
+        continue;
+      } catch {
+        diskWritable = false;
+      }
+    }
+
+    if (file.size > MAX_INLINE_BYTES) {
+      return Response.json(
+        {
+          error:
+            `Este alojamiento no tiene disco para guardar fotos, así que se ` +
+            `incrustan en el producto y "${file.name}" es demasiado grande ` +
+            `(máximo 1,5 MB). Redúcela o despliega en un servidor con disco.`,
+        },
+        { status: 413 },
+      );
+    }
+
+    uploaded.push({
+      id,
+      url: `data:${file.type};base64,${buffer.toString("base64")}`,
+      alt: "",
+    });
   }
 
-  return Response.json({ images: uploaded }, { status: 201 });
+  return Response.json({ images: uploaded, persisted: diskWritable }, { status: 201 });
 }

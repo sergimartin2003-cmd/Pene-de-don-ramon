@@ -17,6 +17,13 @@ import { seedProducts } from "./seed";
  * Se ha aislado tras esta interfaz a propósito: para mover la tienda a una base
  * de datos sólo hay que reescribir readAll/writeAll, nada más del proyecto
  * toca el disco.
+ *
+ * El catálogo se mantiene también en memoria. En un servidor normal el fichero
+ * manda y la memoria es sólo una caché; en un alojamiento con el disco en modo
+ * sólo lectura (Vercel y similares) la escritura falla, se avisa una vez y la
+ * tienda sigue funcionando en memoria: se puede navegar y probar el panel, pero
+ * los cambios se pierden al reiniciar. Es una degradación consciente, para que
+ * un disco no escribible nunca tumbe la web.
  */
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -25,13 +32,18 @@ const DATA_FILE = path.join(DATA_DIR, "products.json");
 type Db = { products: Product[] };
 
 let writeQueue: Promise<unknown> = Promise.resolve();
+let cache: Db | null = null;
+let diskWritable = true;
 
 async function readAll(): Promise<Db> {
+  if (cache) return cache;
+
   try {
     const raw = await fs.readFile(DATA_FILE, "utf8");
     const parsed = JSON.parse(raw) as Db;
     if (!parsed || !Array.isArray(parsed.products)) throw new Error("formato inválido");
-    return parsed;
+    cache = parsed;
+    return cache;
   } catch {
     // Primer arranque (o fichero corrupto): se siembra el catálogo de ejemplo.
     const db: Db = { products: seedProducts() };
@@ -41,10 +53,31 @@ async function readAll(): Promise<Db> {
 }
 
 async function writeAll(db: Db): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const tmp = `${DATA_FILE}.${randomUUID()}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(db, null, 2), "utf8");
-  await fs.rename(tmp, DATA_FILE);
+  // La memoria se actualiza siempre: es lo que permite que la tienda siga en pie
+  // aunque el disco no acepte escrituras.
+  cache = db;
+  if (!diskWritable) return;
+
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    const tmp = `${DATA_FILE}.${randomUUID()}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(db, null, 2), "utf8");
+    await fs.rename(tmp, DATA_FILE);
+  } catch (cause) {
+    diskWritable = false;
+    console.warn(
+      "[tienda] No se puede escribir en data/: el catálogo funcionará sólo en " +
+        "memoria y los cambios se perderán al reiniciar. " +
+        "Para conservarlos, despliega en un servidor con disco persistente o " +
+        "cambia readAll/writeAll por una base de datos.",
+      cause,
+    );
+  }
+}
+
+/** true si los cambios del panel se están guardando de verdad. */
+export function storageIsPersistent(): boolean {
+  return diskWritable;
 }
 
 /** Serializa las escrituras para que dos peticiones a la vez no se pisen. */
