@@ -27,7 +27,12 @@ ejemplo. Se pueden borrar todos desde el panel sin romper nada.
 
 ## El panel de administración
 
-Está en **`/admin`** (también hay un enlace discreto, «Panel», al pie de la web).
+Está en **`/admin`**. Se llega desde tres sitios, sin escribir la URL:
+
+- **Pie de página**: enlace «Panel de gestión», en la barra inferior.
+- **Móvil**: al final del menú de pantalla completa.
+- **Con la sesión abierta**: aparece una barra fija abajo en toda la tienda con
+  un botón «Ir al panel», que además dice dónde se está guardando el catálogo.
 
 - **Contraseña**: la variable de entorno `ADMIN_PASSWORD`. Si no defines ninguna,
   se usa `bora-admin-2026`. **Cámbiala antes de publicar la tienda.**
@@ -40,6 +45,7 @@ Desde el panel se puede:
 | | |
 |---|---|
 | **Añadir y quitar modelos** | Crear, editar, duplicar y borrar (con confirmación). |
+| **Aviso de tallaje** | Un texto corto por modelo («Pide media talla más») que sale junto al selector de números. |
 | **Varias fotos** | Arrastrar o buscar en el ordenador. Se reordenan y se les pone texto alternativo. La primera manda en la parrilla. |
 | **Descripción con IA** | Un botón redacta el texto a partir del nombre, la horma, el color y los materiales. |
 | **Tallaje propio** | Cada modelo define sus columnas (US, UK, centímetros de pie…) y sus números, con stock por talla. Hay plantillas de tallas EU y de S/M/L. |
@@ -61,6 +67,7 @@ cp .env.example .env.local
 | `ADMIN_PASSWORD` | Contraseña del panel. |
 | `ADMIN_SESSION_SECRET` | Opcional. Secreto para firmar la cookie. Si se deja vacío, se deriva de la contraseña (cambiarla cierra las sesiones abiertas). |
 | `ANTHROPIC_API_KEY` | Opcional. Con clave, las descripciones las escribe Claude. Sin clave funciona igual: las compone el redactor local incluido en `lib/ai.ts`. |
+| `BLOB_READ_WRITE_TOKEN` | La inyecta Vercel al conectar un Blob Store. No se pone a mano. Ver «Dónde se guardan los productos». |
 
 Los datos de la marca (nombre, correo, WhatsApp, dirección, horario) están todos
 en **`lib/site.ts`**. Es el único fichero que hay que tocar para renombrar la tienda.
@@ -107,13 +114,14 @@ app/
   admin/                    panel (login + gestión)
   api/                      auth · products · upload · ai/description
 components/
-  site/                     cabecera, pie, animaciones de scroll
+  site/                     cabecera, pie, barra de admin, animaciones de scroll
   product/                  tarjeta, visor de fotos, panel de tallas
   three/                    visor 3D
   admin/                    formulario, subida de fotos, tallaje, ajustes 3D
 lib/
   types.ts                  modelo de datos
-  store.ts                  almacén en JSON (aislado para poder cambiarlo)
+  store.ts                  almacén: elige entre Blob, disco o memoria
+  blob-store.ts             acceso a Vercel Blob (catálogo privado, fotos públicas)
   auth.ts                   sesión del panel
   ai.ts                     redacción de descripciones
   silhouette.ts             foto → contorno
@@ -126,28 +134,52 @@ public/uploads/             las fotos subidas
 
 ---
 
-## Publicarlo
+## Dónde se guardan los productos
 
-El catálogo y las fotos se guardan **en disco** (`data/` y `public/uploads/`), así
-que funciona tal cual en cualquier servidor Node con almacenamiento persistente:
-un VPS, Railway, Render, Fly, Docker…
+El almacén elige solo según dónde esté desplegada la tienda. Todo está detrás de
+la interfaz `Driver` de `lib/store.ts`: para pasar a una base de datos sólo hay
+que escribir otro driver.
+
+| Sitio | Qué usa | ¿Sobrevive a un reinicio? |
+|---|---|---|
+| Vercel (con Blob Store conectado) | **Vercel Blob** | Sí |
+| VPS, Railway, Render, Docker, tu ordenador | `data/products.json` + `public/uploads/` | Sí |
+| Vercel sin Blob Store | Sólo memoria | **No** — el panel avisa |
+
+### En Vercel: conectar el Blob Store
+
+Sin esto, Vercel tiene el disco en sólo lectura y lo que crees desde el panel se
+pierde en cuanto el servidor se reinicia. Son dos minutos:
+
+1. Entra en el proyecto en Vercel → pestaña **Storage**.
+2. **Create Database** → **Blob** → dale un nombre → **Create**.
+3. Conéctalo al proyecto (*Connect to Project*). Vercel inyecta solo la variable
+   `BLOB_READ_WRITE_TOKEN`; no hay que copiar nada a mano.
+4. Vuelve a desplegar (**Deployments** → … → *Redeploy*).
+
+Al arrancar, la tienda detecta la variable y pasa a guardar ahí:
+
+- El catálogo va a `catalogo/products.json` en modo **privado**: contiene los
+  borradores, así que no debe poder leerlo cualquiera con la URL.
+- Las fotos van a `fotos/` en modo **público**, porque tienen que cargarse en el
+  navegador de quien visita la tienda.
+
+Para comprobar que ha funcionado, entra en `/admin`: bajo el título «Productos»
+pone en qué almacén está guardando. Si dice «sólo memoria», el Blob Store no está
+conectado.
+
+Dos escrituras a la vez desde instancias distintas no se pisan: cada guardado
+lleva el ETag del catálogo que leyó, y si otro escribió mientras tanto se recarga
+y se vuelve a aplicar el cambio.
+
+### En un servidor normal
 
 ```bash
 npm run build && npm start
 ```
 
-En plataformas *serverless* con disco de sólo lectura (por ejemplo Vercel) la
-tienda **no se rompe**: detecta que no puede escribir, sigue funcionando en
-memoria y el panel muestra un aviso de «modo demostración». Las fotos que subas
-se incrustan en el producto como data URI (máximo 1,5 MB cada una). Todo se ve y
-se puede probar, pero los cambios se pierden al reiniciar el servidor.
-
-Para que ahí sea una tienda de verdad hay que sustituir el almacén por una base
-de datos: todo el acceso a disco está aislado en las funciones `readAll` y
-`writeAll` de `lib/store.ts`, y las fotos se subirían a un almacenamiento de
-objetos desde `app/api/upload/route.ts`. El resto del proyecto no se entera.
-
----
+Funciona tal cual, sin configurar nada: el catálogo va a `data/products.json` y
+las fotos a `public/uploads/`. Haz copia de seguridad de esas dos rutas.
 
 ## Las fotos de ejemplo
 

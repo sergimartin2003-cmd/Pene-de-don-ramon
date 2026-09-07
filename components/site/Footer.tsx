@@ -73,7 +73,7 @@ export default function Footer() {
             Nosotros
           </Link>
           <Link href="/admin" className="transition-colors hover:text-bone">
-            Panel
+            Panel de gestión
           </Link>
         </div>
       </div>

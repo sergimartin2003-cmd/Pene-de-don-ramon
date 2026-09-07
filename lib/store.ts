@@ -10,20 +10,29 @@ import {
 } from "./types";
 import { uniqueSlug } from "./slug";
 import { seedProducts } from "./seed";
+import {
+  blobIsConfigured,
+  isConflict,
+  readCatalog,
+  writeCatalog,
+} from "./blob-store";
 
 /**
- * Almacén de productos en fichero JSON.
+ * Almacén de productos.
  *
- * Se ha aislado tras esta interfaz a propósito: para mover la tienda a una base
- * de datos sólo hay que reescribir readAll/writeAll, nada más del proyecto
- * toca el disco.
+ * Hay tres formas de guardar, y se elige sola según dónde esté desplegada la
+ * tienda:
  *
- * El catálogo se mantiene también en memoria. En un servidor normal el fichero
- * manda y la memoria es sólo una caché; en un alojamiento con el disco en modo
- * sólo lectura (Vercel y similares) la escritura falla, se avisa una vez y la
- * tienda sigue funcionando en memoria: se puede navegar y probar el panel, pero
- * los cambios se pierden al reiniciar. Es una degradación consciente, para que
- * un disco no escribible nunca tumbe la web.
+ *  1. Vercel Blob, si existe BLOB_READ_WRITE_TOKEN. Es el caso de Vercel, donde
+ *     el disco es de sólo lectura. Los cambios sobreviven a los reinicios.
+ *  2. Un fichero JSON en data/, si el disco acepta escrituras. Es el caso de un
+ *     VPS, Railway, Render o de tu propio ordenador.
+ *  3. Sólo memoria, si ninguna de las dos funciona. La tienda no se cae: se
+ *     puede navegar y probar el panel, pero lo que se cree se pierde al
+ *     reiniciar. El panel avisa de ello.
+ *
+ * Todo el acceso al almacenamiento está detrás de la interfaz Driver: para
+ * cambiarlo por una base de datos sólo hay que escribir otro driver.
  */
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -31,77 +40,174 @@ const DATA_FILE = path.join(DATA_DIR, "products.json");
 
 type Db = { products: Product[] };
 
+/** `version` sirve para detectar que otro ha escrito mientras tanto. */
+type Snapshot = { db: Db; version: string | null };
+
+type Driver = {
+  label: string;
+  read: () => Promise<Snapshot | null>;
+  write: (db: Db, version: string | null) => Promise<void>;
+};
+
+class ConflictError extends Error {}
+
+const blobDriver: Driver = {
+  label: "Vercel Blob",
+  async read() {
+    const found = await readCatalog();
+    if (!found) return null;
+    return { db: parse(found.text), version: found.etag };
+  },
+  async write(db, version) {
+    try {
+      await writeCatalog(JSON.stringify(db, null, 2), version);
+    } catch (cause) {
+      if (isConflict(cause)) throw new ConflictError();
+      throw cause;
+    }
+  },
+};
+
+const fileDriver: Driver = {
+  label: "disco (data/products.json)",
+  async read() {
+    const raw = await fs.readFile(DATA_FILE, "utf8").catch(() => null);
+    if (raw === null) return null;
+    return { db: parse(raw), version: null };
+  },
+  async write(db) {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    // Escritura atómica: si el proceso muere a media escritura, el fichero
+    // bueno sigue intacto.
+    const tmp = `${DATA_FILE}.${randomUUID()}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(db, null, 2), "utf8");
+    await fs.rename(tmp, DATA_FILE);
+  },
+};
+
+function parse(raw: string): Db {
+  const parsed = JSON.parse(raw) as Db;
+  if (!parsed || !Array.isArray(parsed.products)) throw new Error("formato inválido");
+  return parsed;
+}
+
 /**
  * El estado vive en globalThis a propósito. Next puede empaquetar cada ruta por
  * separado, y entonces cada una tendría su propia copia de las variables de este
- * módulo: sin disco donde sincronizarse, un producto creado desde el panel no lo
- * vería la ficha pública. Con un único objeto global comparten catálogo.
+ * módulo: sin un almacén compartido, un producto creado desde el panel no lo
+ * vería la ficha pública.
  */
 type StoreState = {
-  writeQueue: Promise<unknown>;
-  cache: Db | null;
-  diskWritable: boolean;
+  queue: Promise<unknown>;
+  memory: Db | null;
+  /** true cuando el driver falló al escribir y sólo queda la memoria. */
+  degraded: boolean;
+  warned: boolean;
 };
 
 const globalRef = globalThis as unknown as { __tiendaStore?: StoreState };
 
 const state: StoreState = (globalRef.__tiendaStore ??= {
-  writeQueue: Promise.resolve(),
-  cache: null,
-  diskWritable: true,
+  queue: Promise.resolve(),
+  memory: null,
+  degraded: false,
+  warned: false,
 });
 
-async function readAll(): Promise<Db> {
-  // Con disco, el fichero manda en cada lectura; sin él, la memoria es la fuente.
-  if (state.cache && !state.diskWritable) return state.cache;
-
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as Db;
-    if (!parsed || !Array.isArray(parsed.products)) throw new Error("formato inválido");
-    state.cache = parsed;
-    return parsed;
-  } catch {
-    if (state.cache) return state.cache;
-    // Primer arranque (o fichero corrupto): se siembra el catálogo de ejemplo.
-    const db: Db = { products: seedProducts() };
-    await writeAll(db);
-    return db;
-  }
+function driver(): Driver {
+  return blobIsConfigured() ? blobDriver : fileDriver;
 }
 
-async function writeAll(db: Db): Promise<void> {
-  // La memoria se actualiza siempre: es lo que permite que la tienda siga en pie
-  // aunque el disco no acepte escrituras.
-  state.cache = db;
-  if (!state.diskWritable) return;
-
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    const tmp = `${DATA_FILE}.${randomUUID()}.tmp`;
-    await fs.writeFile(tmp, JSON.stringify(db, null, 2), "utf8");
-    await fs.rename(tmp, DATA_FILE);
-  } catch (cause) {
-    state.diskWritable = false;
-    console.warn(
-      "[tienda] No se puede escribir en data/: el catálogo funcionará sólo en " +
-        "memoria y los cambios se perderán al reiniciar. " +
-        "Para conservarlos, despliega en un servidor con disco persistente o " +
-        "cambia readAll/writeAll por una base de datos.",
-      cause,
-    );
-  }
+/** Qué almacén está usando la tienda ahora mismo. */
+export function storageLabel(): string {
+  return state.degraded ? "sólo memoria" : driver().label;
 }
 
-/** true si los cambios del panel se están guardando de verdad. */
+/** true si los cambios del panel se guardan de verdad. */
 export function storageIsPersistent(): boolean {
-  return state.diskWritable;
+  return !state.degraded;
 }
 
-/** Serializa las escrituras para que dos peticiones a la vez no se pisen. */
-function serialize<T>(task: () => Promise<T>): Promise<T> {
-  const run = state.writeQueue.then(task, task);
-  state.writeQueue = run.catch(() => undefined);
+function degrade(cause: unknown): void {
+  state.degraded = true;
+  if (state.warned) return;
+  state.warned = true;
+  console.warn(
+    `[tienda] No se ha podido escribir en ${driver().label}: el catálogo ` +
+      "funcionará sólo en memoria y los cambios se perderán al reiniciar. " +
+      "En Vercel, conecta un Blob Store al proyecto (Storage → Blob) para que " +
+      "se guarden de verdad.",
+    cause,
+  );
+}
+
+async function load(): Promise<Snapshot> {
+  if (state.degraded) {
+    return { db: state.memory ?? seed(), version: null };
+  }
+
+  try {
+    const found = await driver().read();
+    if (found) {
+      state.memory = found.db;
+      return found;
+    }
+  } catch (cause) {
+    // Un fichero corrupto o un fallo de red: se sigue con lo que haya en memoria.
+    degrade(cause);
+    return { db: state.memory ?? seed(), version: null };
+  }
+
+  // Primer arranque: se siembra el catálogo de ejemplo y se intenta guardarlo.
+  const db = seed();
+  await save(db, null);
+  return { db, version: null };
+}
+
+function seed(): Db {
+  const db: Db = { products: seedProducts() };
+  state.memory = db;
+  return db;
+}
+
+async function save(db: Db, version: string | null): Promise<void> {
+  state.memory = db;
+  if (state.degraded) return;
+  try {
+    await driver().write(db, version);
+  } catch (cause) {
+    if (cause instanceof ConflictError) throw cause;
+    degrade(cause);
+  }
+}
+
+/**
+ * Aplica un cambio sobre el catálogo. Las escrituras se serializan dentro de
+ * una instancia, y en Blob se reintenta si otra instancia escribió a la vez.
+ */
+function mutate<T>(apply: (db: Db) => { db: Db; result: T }): Promise<T> {
+  const run = state.queue.then(
+    async () => {
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const snapshot = await load();
+        const { db, result } = apply(structuredClone(snapshot.db));
+        try {
+          await save(db, snapshot.version);
+          return result;
+        } catch (cause) {
+          if (!(cause instanceof ConflictError)) throw cause;
+          // Otro escribió mientras tanto: se recarga y se vuelve a aplicar.
+          state.memory = null;
+        }
+      }
+      throw new Error("No se ha podido guardar: el catálogo cambió a la vez desde otro sitio.");
+    },
+    async () => {
+      throw new Error("No se ha podido guardar.");
+    },
+  );
+
+  state.queue = run.catch(() => undefined);
   return run;
 }
 
@@ -112,24 +218,23 @@ function sortNewestFirst(products: Product[]): Product[] {
 export async function listProducts(
   opts: { includeDrafts?: boolean } = {},
 ): Promise<Product[]> {
-  const db = await readAll();
+  const { db } = await load();
   const all = sortNewestFirst(db.products);
   return opts.includeDrafts ? all : all.filter((p) => p.published);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const db = await readAll();
+  const { db } = await load();
   return db.products.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
-  const db = await readAll();
+  const { db } = await load();
   return db.products.find((p) => p.id === id) ?? null;
 }
 
 export async function createProduct(input: ProductInput): Promise<Product> {
-  return serialize(async () => {
-    const db = await readAll();
+  return mutate((db) => {
     const now = new Date().toISOString();
     const product: Product = {
       ...normalize(input),
@@ -139,8 +244,7 @@ export async function createProduct(input: ProductInput): Promise<Product> {
       updatedAt: now,
     };
     db.products.push(product);
-    await writeAll(db);
-    return product;
+    return { db, result: product };
   });
 }
 
@@ -148,10 +252,10 @@ export async function updateProduct(
   id: string,
   input: ProductInput,
 ): Promise<Product | null> {
-  return serialize(async () => {
-    const db = await readAll();
+  return mutate((db) => {
     const index = db.products.findIndex((p) => p.id === id);
-    if (index === -1) return null;
+    if (index === -1) return { db, result: null };
+
     const current = db.products[index];
     const taken = db.products.filter((p) => p.id !== id).map((p) => p.slug);
     const wanted = input.slug || current.slug;
@@ -163,19 +267,16 @@ export async function updateProduct(
       updatedAt: new Date().toISOString(),
     };
     db.products[index] = updated;
-    await writeAll(db);
-    return updated;
+    return { db, result: updated };
   });
 }
 
 export async function deleteProduct(id: string): Promise<Product | null> {
-  return serialize(async () => {
-    const db = await readAll();
+  return mutate((db) => {
     const index = db.products.findIndex((p) => p.id === id);
-    if (index === -1) return null;
+    if (index === -1) return { db, result: null };
     const [removed] = db.products.splice(index, 1);
-    await writeAll(db);
-    return removed;
+    return { db, result: removed };
   });
 }
 

@@ -4,7 +4,7 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import LoginForm from "@/components/admin/LoginForm";
 import { aiIsConfigured } from "@/lib/ai";
 import { isAdmin } from "@/lib/auth";
-import { listProducts, storageIsPersistent } from "@/lib/store";
+import { listProducts, storageIsPersistent, storageLabel } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +23,7 @@ export default async function AdminPage() {
       initialProducts={products}
       aiConfigured={aiIsConfigured()}
       persistent={storageIsPersistent()}
+      storage={storageLabel()}
     />
   );
 }

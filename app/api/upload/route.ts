@@ -3,6 +3,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import { isAdmin, unauthorized } from "@/lib/auth";
+import { blobIsConfigured, uploadPhoto } from "@/lib/blob-store";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -12,9 +13,9 @@ const MAX_BYTES = 12 * 1024 * 1024; // 12 MB por foto
 const MAX_FILES = 12;
 
 /**
- * Si el alojamiento tiene el disco en sólo lectura (Vercel y similares) la foto
- * no se puede guardar como fichero, así que se incrusta en el propio producto
- * como data URI. Ahí el límite es mucho más bajo: va dentro del JSON.
+ * Último recurso: sin disco y sin Blob, la foto se incrusta en el propio
+ * producto como data URI. Ahí el límite es mucho más bajo, porque viaja dentro
+ * del JSON del catálogo.
  */
 const MAX_INLINE_BYTES = 1.5 * 1024 * 1024;
 
@@ -51,7 +52,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (diskWritable) {
+  // En Vercel el disco es de sólo lectura: las fotos van a Blob, que además es
+  // lo que las hace sobrevivir a los despliegues.
+  const useBlob = blobIsConfigured();
+
+  if (!useBlob && diskWritable) {
     try {
       await fs.mkdir(UPLOAD_DIR, { recursive: true });
     } catch {
@@ -79,6 +84,24 @@ export async function POST(request: Request) {
     const id = randomUUID();
     const buffer = Buffer.from(await file.arrayBuffer());
 
+    if (useBlob) {
+      try {
+        const url = await uploadPhoto(`fotos/${id}${extension}`, buffer, file.type);
+        uploaded.push({ id, url, alt: "" });
+        continue;
+      } catch (cause) {
+        console.error("[tienda] Fallo al subir la foto a Vercel Blob.", cause);
+        return Response.json(
+          {
+            error:
+              "No se ha podido guardar la foto en Vercel Blob. Comprueba que el " +
+              "Blob Store sigue conectado al proyecto.",
+          },
+          { status: 502 },
+        );
+      }
+    }
+
     if (diskWritable) {
       try {
         const filename = `${id}${extension}`;
@@ -94,9 +117,10 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            `Este alojamiento no tiene disco para guardar fotos, así que se ` +
-            `incrustan en el producto y "${file.name}" es demasiado grande ` +
-            `(máximo 1,5 MB). Redúcela o despliega en un servidor con disco.`,
+            `Aquí no hay dónde guardar las fotos, así que se incrustan en el ` +
+            `producto y "${file.name}" es demasiado grande (máximo 1,5 MB). ` +
+            `Conecta un Blob Store al proyecto en Vercel (Storage → Blob) y ` +
+            `podrás subir fotos de hasta 12 MB que además no se perderán.`,
         },
         { status: 413 },
       );
@@ -109,5 +133,5 @@ export async function POST(request: Request) {
     });
   }
 
-  return Response.json({ images: uploaded, persisted: diskWritable }, { status: 201 });
+  return Response.json({ images: uploaded, persisted: useBlob || diskWritable }, { status: 201 });
 }

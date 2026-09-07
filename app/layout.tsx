@@ -3,6 +3,7 @@ import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
+import AdminBar from "@/components/site/AdminBar";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="contenido">{children}</main>
         <Footer />
+        <AdminBar />
         <div className="grain" aria-hidden="true" />
       </body>
     </html>

@@ -12,13 +12,20 @@ import { CATEGORY_LABELS, type Product } from "@/lib/types";
 type Props = {
   initialProducts: Product[];
   aiConfigured: boolean;
-  /** false cuando el alojamiento no tiene disco y los cambios no sobreviven. */
+  /** false cuando no hay dónde guardar y los cambios no sobreviven al reinicio. */
   persistent: boolean;
+  /** Dónde se está guardando el catálogo, para decirlo en claro. */
+  storage: string;
 };
 
 type View = { mode: "list" } | { mode: "edit"; product: Product | null };
 
-export default function AdminDashboard({ initialProducts, aiConfigured, persistent }: Props) {
+export default function AdminDashboard({
+  initialProducts,
+  aiConfigured,
+  persistent,
+  storage,
+}: Props) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [view, setView] = useState<View>({ mode: "list" });
@@ -122,11 +129,20 @@ export default function AdminDashboard({ initialProducts, aiConfigured, persiste
 
       <div className="shell py-10 md:py-14">
         {!persistent && (
-          <p className="mb-8 border border-ember/40 bg-ember/8 px-4 py-3 text-sm text-ember-dark">
-            <strong className="font-medium">Modo demostración.</strong> Este
-            alojamiento no tiene disco donde guardar, así que puedes probarlo todo
-            pero los cambios se perderán al reiniciar el servidor.
-          </p>
+          <div className="mb-8 border border-ember/40 bg-ember/8 px-4 py-3.5 text-sm text-ember-dark">
+            <p>
+              <strong className="font-medium">Modo demostración.</strong> Aquí no hay
+              dónde guardar, así que puedes probarlo todo pero lo que crees se
+              perderá al reiniciar el servidor.
+            </p>
+            <p className="mt-2 text-ember-dark/85">
+              Para que los cambios se guarden de verdad en Vercel: entra en el
+              proyecto → <strong className="font-medium">Storage</strong> →{" "}
+              <strong className="font-medium">Create Database</strong> → Blob,
+              conéctalo al proyecto y vuelve a desplegar. El catálogo y las fotos
+              pasan a guardarse ahí solos.
+            </p>
+          </div>
         )}
         {flash && (
           <p className="mb-8 flex items-center justify-between gap-4 border border-ink/15 bg-sand/50 px-4 py-3 text-sm">
@@ -158,6 +174,7 @@ export default function AdminDashboard({ initialProducts, aiConfigured, persiste
                   {products.length} en total · {published} visibles ·{" "}
                   {products.length - published} en borrador
                 </p>
+                <p className="label mt-2 text-stone">Guardando en {storage}</p>
               </div>
               <button
                 type="button"

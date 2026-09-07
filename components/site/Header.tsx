@@ -157,6 +157,12 @@ export default function Header() {
           <a href={`mailto:${site.email}`} className="mt-1 block text-lg text-bone/85">
             {site.email}
           </a>
+          <Link
+            href="/admin"
+            className="label mt-5 inline-block border border-bone/25 px-4 py-2.5 text-bone/70"
+          >
+            Panel de gestión
+          </Link>
         </div>
       </div>
     </>
