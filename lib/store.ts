@@ -31,20 +31,38 @@ const DATA_FILE = path.join(DATA_DIR, "products.json");
 
 type Db = { products: Product[] };
 
-let writeQueue: Promise<unknown> = Promise.resolve();
-let cache: Db | null = null;
-let diskWritable = true;
+/**
+ * El estado vive en globalThis a propósito. Next puede empaquetar cada ruta por
+ * separado, y entonces cada una tendría su propia copia de las variables de este
+ * módulo: sin disco donde sincronizarse, un producto creado desde el panel no lo
+ * vería la ficha pública. Con un único objeto global comparten catálogo.
+ */
+type StoreState = {
+  writeQueue: Promise<unknown>;
+  cache: Db | null;
+  diskWritable: boolean;
+};
+
+const globalRef = globalThis as unknown as { __tiendaStore?: StoreState };
+
+const state: StoreState = (globalRef.__tiendaStore ??= {
+  writeQueue: Promise.resolve(),
+  cache: null,
+  diskWritable: true,
+});
 
 async function readAll(): Promise<Db> {
-  if (cache) return cache;
+  // Con disco, el fichero manda en cada lectura; sin él, la memoria es la fuente.
+  if (state.cache && !state.diskWritable) return state.cache;
 
   try {
     const raw = await fs.readFile(DATA_FILE, "utf8");
     const parsed = JSON.parse(raw) as Db;
     if (!parsed || !Array.isArray(parsed.products)) throw new Error("formato inválido");
-    cache = parsed;
-    return cache;
+    state.cache = parsed;
+    return parsed;
   } catch {
+    if (state.cache) return state.cache;
     // Primer arranque (o fichero corrupto): se siembra el catálogo de ejemplo.
     const db: Db = { products: seedProducts() };
     await writeAll(db);
@@ -55,8 +73,8 @@ async function readAll(): Promise<Db> {
 async function writeAll(db: Db): Promise<void> {
   // La memoria se actualiza siempre: es lo que permite que la tienda siga en pie
   // aunque el disco no acepte escrituras.
-  cache = db;
-  if (!diskWritable) return;
+  state.cache = db;
+  if (!state.diskWritable) return;
 
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
@@ -64,7 +82,7 @@ async function writeAll(db: Db): Promise<void> {
     await fs.writeFile(tmp, JSON.stringify(db, null, 2), "utf8");
     await fs.rename(tmp, DATA_FILE);
   } catch (cause) {
-    diskWritable = false;
+    state.diskWritable = false;
     console.warn(
       "[tienda] No se puede escribir en data/: el catálogo funcionará sólo en " +
         "memoria y los cambios se perderán al reiniciar. " +
@@ -77,13 +95,13 @@ async function writeAll(db: Db): Promise<void> {
 
 /** true si los cambios del panel se están guardando de verdad. */
 export function storageIsPersistent(): boolean {
-  return diskWritable;
+  return state.diskWritable;
 }
 
 /** Serializa las escrituras para que dos peticiones a la vez no se pisen. */
 function serialize<T>(task: () => Promise<T>): Promise<T> {
-  const run = writeQueue.then(task, task);
-  writeQueue = run.catch(() => undefined);
+  const run = state.writeQueue.then(task, task);
+  state.writeQueue = run.catch(() => undefined);
   return run;
 }
 
